@@ -8,3 +8,9 @@ sudo apt install gcc-10 gcc-10-base gcc-10-doc g++-10
 sudo apt install libstdc++-10-dev libstdc++-10-doc
 sudo apt install g++
 ```
+### Vulkan
+```
+sudo apt install vulkan-tools
+sudo apt install vulkan-validationlayers-dev spirv-tools
+sudo apt install libglfw3-dev
+```
