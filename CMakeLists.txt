@@ -10,8 +10,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # add the executable
 add_executable(scop srcs/main.cpp)
 
-set(VULKAN_PATH "C:/VulkanSDK/1.3.204.1")
-set(ENV{VULKAN_SDK} ${VULKAN_PATH})
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set(VULKAN_PATH "C:/VulkanSDK/1.3.204.1")
+    set(ENV{VULKAN_SDK} ${VULKAN_PATH})
+endif()
+
 find_package(Vulkan REQUIRED)
 target_link_libraries(scop ${Vulkan_LIBRARIES})
 target_include_directories(scop PUBLIC "${VULKAN_PATH}/Include")
