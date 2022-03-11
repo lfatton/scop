@@ -9,3 +9,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # add the executable
 add_executable(scop srcs/main.cpp)
+
+set(ENV{VULKAN_SDK} "C:/VulkanSDK/1.3.204.1")
+find_package(Vulkan REQUIRED)
+target_link_libraries(scop ${Vulkan_LIBRARIES})
+target_include_directories(scop PUBLIC "C:/VulkanSDK/1.3.204.1/Include")
+
+
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+add_subdirectory(libs/glfw-3.3.6)
+target_link_libraries(scop glfw)
