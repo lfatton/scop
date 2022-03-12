@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.21)
 
 # set the project name and version
 project(scop)
@@ -10,19 +10,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # add the executable
 add_executable(scop srcs/main.cpp)
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    set(VULKAN_PATH "C:/VulkanSDK/1.3.204.1")
-    set(ENV{VULKAN_SDK} ${VULKAN_PATH})
-endif()
 
-find_package(Vulkan REQUIRED)
-target_link_libraries(scop ${Vulkan_LIBRARIES})
-target_include_directories(scop PUBLIC "${VULKAN_PATH}/Include")
+find_package(OpenGL REQUIRED)
+find_package(GLUT REQUIRED)
+include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
 
-
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-
-add_subdirectory(libs/glfw-3.3.6)
-target_link_libraries(scop glfw)
+target_link_libraries(scop ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )
