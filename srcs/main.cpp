@@ -1,25 +1,33 @@
-#include <GL/glut.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <c++/9/iostream>
 
-void displayMe(void)
+int main()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
-    glBegin(GL_POLYGON);
-    glVertex3f(0.5, 0.0, 0.5);
-    glVertex3f(0.5, 0.0, 0.0);
-    glVertex3f(0.0, 0.5, 0.0);
-    glVertex3f(0.0, 0.0, 0.5);
-    glEnd();
-    glFlush();
-}
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
-int main(int argc, char** argv)
-{
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE);
-    glutInitWindowSize(400, 300);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow("Hello world!");
-    glutDisplayFunc(displayMe);
-    glutMainLoop();
+#ifdef darwin
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#else
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#endif
+
+    GLFWwindow* window = glfwCreateWindow(800, 600, "scop", NULL, NULL);
+    if (!window)
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+    glfwMakeContextCurrent(window);
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return -1;
+    }
+
     return 0;
 }
