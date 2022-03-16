@@ -14,5 +14,4 @@ class Environment {
         void init_glad();
 };
 
-
 #endif
