@@ -11,7 +11,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_executable(scop libs/glad.c srcs/main.cpp)
 
 find_package(OpenGL REQUIRED)
-find_package(GLUT REQUIRED)
 include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} includes)
 
 target_link_libraries(scop ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )
