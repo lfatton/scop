@@ -11,9 +11,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_executable(scop srcs/main.cpp libs/glad.c srcs/Environment.cpp srcs/utils.cpp)
 
 find_package(OpenGL REQUIRED)
-include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} includes)
+include_directories( ${OPENGL_INCLUDE_DIRS} includes)
 
-target_link_libraries(scop ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )
+target_link_libraries(scop ${OPENGL_LIBRARIES})
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
