@@ -1,33 +1,47 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <c++/9/iostream>
+#include <iostream>
+#include <conf.h>
 
-int main()
+void error_scop(char *error)
+{
+    std::cout << error <<std::endl;
+    exit(EXIT_FAILURE);
+}
+
+
+GLFWwindow* init_glfw()
 {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
-#ifdef darwin
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#else
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#endif
+    if (OS == "unix" || "windows")
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    else
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "scop", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(WINDOW_W, WINDOW_H, "scop", NULL, NULL);
     if (!window)
     {
-        std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
-        return -1;
+        error_scop("Failed to create GLFW window!");
     }
-    glfwMakeContextCurrent(window);
 
+    glfwMakeContextCurrent(window);
+    return window;
+}
+
+void init_glad()
+{
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
-    }
+        error_scop("Failed to initialize GLAD!");
+}
+
+int main()
+{
+    init_glfw();
+    init_glad();
 
     return 0;
 }
