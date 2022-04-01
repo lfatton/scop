@@ -15,7 +15,7 @@ GLFWwindow* Environment::init_glfw() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
-    if (OS == "unix" || "windows")
+    if (OS == "unix" || OS == "windows")
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     else
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
