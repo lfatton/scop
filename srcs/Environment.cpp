@@ -1,18 +1,31 @@
+#include "Environment.hpp"
 
-#include "Environment.h"
-
-void Environment::error(char const *error) {
-    std::cout << error <<std::endl;
-    exit(EXIT_FAILURE);
+Environment::Environment() {
+    initGlfw();
+    createWindow();
+    initGlad();
+    setFramebufferCallback();
 }
 
-void Environment::quit() {
-    glfwTerminate();
-    exit(EXIT_SUCCESS);
+Environment::~Environment() {
+    glfwDestroyWindow(mWindow);
 }
 
-GLFWwindow* Environment::init_glfw() {
-    glfwInit();
+GLFWwindow* Environment::getWindow() {
+    return mWindow;
+}
+
+void Environment::initGlfw() {
+    if (!glfwInit())
+        throw std::runtime_error("Failed to initialize GLFW!");
+}
+
+void Environment::initGlad() {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        throw std::runtime_error("Failed to initialize GLAD!");
+}
+
+void Environment::createWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
@@ -21,15 +34,17 @@ GLFWwindow* Environment::init_glfw() {
     else
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    GLFWwindow* window = glfwCreateWindow(WINDOW_W, WINDOW_H, "scop", NULL, NULL);
-    if (!window)
-        error("Failed to create GLFW window!");
+    mWindow = glfwCreateWindow(WINDOW_W, WINDOW_H, "scop", NULL, NULL);
 
-    glfwMakeContextCurrent(window);
-    return window;
+    if (!mWindow)
+        throw std::runtime_error("Failed to create GLFW window!");
+
+    glfwMakeContextCurrent(mWindow);
 }
 
-void Environment::init_glad() {
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-        error("Failed to initialize GLAD!");
+void Environment::setFramebufferCallback() {
+    glfwSetFramebufferSizeCallback(mWindow, [](GLFWwindow* window, int width, int height)
+    {
+        glViewport(0, 0, WINDOW_W, WINDOW_H);
+    });
 }
