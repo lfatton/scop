@@ -5,31 +5,18 @@
 # include "GLFW/glfw3.h"
 # include <iostream>
 # include <cstring>
-
-const char* const VERTEX_SHADER_SRC = "#version 460 core\n"
-                                      "layout (location = 0) in vec3 aPos;\n"
-                                      "void main()\n"
-                                      "{\n"
-                                      "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-                                      "}\0";
-
-const char* const FRAGMENT_SHADER_SRC = "#version 460 core\n"
-                                        "out vec4 FragColor;\n"
-                                        "void main()\n"
-                                        "{\n"
-                                        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 0.3f);\n"
-                                        "}\n\0";
+# include <fstream>
+# include <sstream>
 
 class Shader {
 private:
-    int  mSuccess;
-    char mInfoLog[512];
     unsigned int mShaderProgram;
 
-    void createShaderProgram();
+    void createShaderProgram(const char* vertex, const char* fragment);
     unsigned int createShader(unsigned int type, const char* src);
+    void checkCompilationErrors(unsigned int shader, std::string type);
 public:
-    Shader();
+    Shader(const char* vertexPath, const char* fragmentPath);
     ~Shader();
 
     unsigned int getShaderProgram();

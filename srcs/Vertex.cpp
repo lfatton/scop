@@ -1,8 +1,7 @@
 #include "Vertex.hpp"
 
 Vertex::Vertex() {
-    initVBO();
-    initVAO();
+    initObjects();
 }
 
 Vertex::~Vertex() {
@@ -14,22 +13,19 @@ unsigned int Vertex::getVAO() {
     return mVAO;
 }
 
-void Vertex::initVBO() {
+void Vertex::initObjects() {
+    glGenVertexArrays(1, &mVAO);
     glGenBuffers(1, &mVBO);
+    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+    glBindVertexArray(mVAO);
+
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(VERTICES), VERTICES, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-}
-
-void Vertex::initVAO() {
-    glGenVertexArrays(1, &mVAO);
-    glBindVertexArray(mVAO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(VERTICES), VERTICES, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    glClearColor(0.576, 0.439, 0.859, 1);
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 }
