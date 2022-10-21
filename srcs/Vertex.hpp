@@ -4,18 +4,17 @@
 # include "glad/glad.h"
 # include "GLFW/glfw3.h"
 
-float const VERTICES[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f,  0.5f, 0.0f
+const float VERTICES[] = {
+        // positions         // colors
+        0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
+        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
+        0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top
 };
-
 class Vertex {
 private:
     unsigned int mVBO, mVAO;
 
-    void initVBO();
-    void initVAO();
+    void initObjects();
 
 public:
     Vertex();

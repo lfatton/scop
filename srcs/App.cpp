@@ -2,7 +2,7 @@
 
 App::App() {
     Environment glEnvironment;
-    Shader shader;
+    Shader shader("../shaders/shader.vert", "../shaders/shader.frag");
     Vertex vertex;
 
     renderLoop(glEnvironment.getWindow(), shader.getShaderProgram(), vertex.getVAO());
@@ -14,14 +14,23 @@ App::~App() {
 
 void App::renderLoop(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO) {
     while(!glfwWindowShouldClose(window)) {
+        // input
+        // -----
         processInput(window);
-        glfwSwapBuffers(window);
 
+        // render
+        // ------
+        glClearColor(0.576, 0.439, 0.859, 1);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        // render the triangle
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
+        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+        // -------------------------------------------------------------------------------
+        glfwSwapBuffers(window);
         glfwPollEvents();
     }
 }
