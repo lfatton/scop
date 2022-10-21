@@ -7,7 +7,7 @@
 
 class App {
 private:
-    void renderLoop(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO);
+    void renderLoop(GLFWwindow* window, unsigned int shaderProgram);
     void processInput(GLFWwindow* window);
     void quit();
     double speed;

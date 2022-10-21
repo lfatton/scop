@@ -9,14 +9,14 @@ App::App() {
     speed = 0.5;
     can_change_speed = true;
 
-    renderLoop(glEnvironment.getWindow(), shader.getShaderProgram(), vertex.getVAO());
+    renderLoop(glEnvironment.getWindow(), shader.getShaderProgram());
 }
 
 App::~App() {
     quit();
 }
 
-void App::renderLoop(GLFWwindow *window, unsigned int shaderProgram, unsigned int VAO) {
+void App::renderLoop(GLFWwindow *window, unsigned int shaderProgram) {
     while (!glfwWindowShouldClose(window)) {
         // input
         // -----
