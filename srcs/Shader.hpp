@@ -10,17 +10,17 @@
 
 class Shader {
 private:
-    unsigned int mShaderProgram;
+    unsigned int mShaderProgram{};
 
     void createShaderProgram(const char* vertex, const char* fragment);
-    unsigned int createShader(unsigned int type, const char* src);
-    void checkCompilationErrors(unsigned int shader, std::string type);
+    static unsigned int createShader(unsigned int type, const char* src);
+    static void checkCompilationErrors(unsigned int shader, std::string type);
 public:
     Shader(const char* vertexPath, const char* fragmentPath);
     ~Shader();
 
-    unsigned int getShaderProgram();
+    [[nodiscard]] unsigned int getShaderProgram() const;
 };
 
 
-# endif SHADER_HPP
+# endif //SHADER_HPP

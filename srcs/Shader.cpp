@@ -36,22 +36,22 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 }
 
 Shader::~Shader() {
-    glDeleteShader(mShaderProgram);
+    glDeleteShader(this->mShaderProgram);
 }
 
-unsigned int Shader::getShaderProgram() {
-    return mShaderProgram;
+unsigned int Shader::getShaderProgram() const {
+    return this->mShaderProgram;
 }
 
 void Shader::createShaderProgram(const char* vertexCode, const char* fragmentCode) {
     unsigned int vertex = createShader(GL_VERTEX_SHADER, vertexCode);
     unsigned int fragment = createShader(GL_FRAGMENT_SHADER, fragmentCode);
 
-    mShaderProgram = glCreateProgram();
-    glAttachShader(mShaderProgram, vertex);
-    glAttachShader(mShaderProgram, fragment);
-    glLinkProgram(mShaderProgram);
-    checkCompilationErrors(mShaderProgram, "PROGRAM");
+    this->mShaderProgram = glCreateProgram();
+    glAttachShader(this->mShaderProgram, vertex);
+    glAttachShader(this->mShaderProgram, fragment);
+    glLinkProgram(this->mShaderProgram);
+    checkCompilationErrors(this->mShaderProgram, "PROGRAM");
 
 
     glDeleteShader(vertex);
@@ -82,7 +82,7 @@ void Shader::checkCompilationErrors(unsigned int shader, std::string type)
         glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
         if (!success)
         {
-            glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+            glGetShaderInfoLog(shader, 1024, nullptr, infoLog);
             std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog
             << "\n -- --------------------------------------------------- -- " << std::endl;
             throw std::runtime_error(infoLog);
@@ -93,7 +93,7 @@ void Shader::checkCompilationErrors(unsigned int shader, std::string type)
         glGetProgramiv(shader, GL_LINK_STATUS, &success);
         if (!success)
         {
-            glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+            glGetProgramInfoLog(shader, 1024, nullptr, infoLog);
             std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog
             << "\n -- --------------------------------------------------- -- " << std::endl;
             throw std::runtime_error(infoLog);

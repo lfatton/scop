@@ -23,14 +23,14 @@ private:
 
     void setFramebufferCallback();
     void createWindow();
-    void initGlfw();
-    void initGlad();
+    static void initGlfw();
+    static void initGlad();
 
 public:
     Environment();
     ~Environment();
 
-    GLFWwindow* getWindow();
+    [[nodiscard]] GLFWwindow* getWindow() const;
 };
 
 

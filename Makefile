@@ -8,7 +8,7 @@ SRC_NAME = main.cpp
 
 SRCS = $(addprefix $(SRC_PATH)/,$(SRC_NAME))
 
-LDFLAGS = -lglfw -lvulkan
+LDFLAGS = -lglfw
 
 CC = g++
 
