@@ -9,15 +9,25 @@ App::App() {
     speed = 0.5;
     can_change_speed = true;
 
-    renderLoop(glEnvironment.getWindow(), shader.getShaderProgram());
+    renderLoop(glEnvironment.getWindow(), shader.getShaderProgram(), vertex);
 }
 
 App::~App() {
     quit();
 }
 
-void App::renderLoop(GLFWwindow *window, unsigned int shaderProgram) {
-    while (!glfwWindowShouldClose(window)) {
+void App::renderLoop(GLFWwindow* window, unsigned int shaderProgram, const Vertex& vertex) {
+    Vector rotationAxis(0.5f, 1.0f, 0.0f);
+    Matrix view;
+    Matrix projection;
+    Matrix model;
+    Matrix mvp;
+
+    view.getTranslationMatrix(0.0f, 0.0f, -3.0f);
+    projection.getPerspectiveMatrix(45.0f, (float)WINDOW_W / (float)WINDOW_H, 0.1f, 100.0f);
+
+    while(!glfwWindowShouldClose(window)) {
+        glEnable(GL_DEPTH_TEST);
         // input
         // -----
         processInput(window);
@@ -28,13 +38,7 @@ void App::renderLoop(GLFWwindow *window, unsigned int shaderProgram) {
         // render
         // ------
         glClearColor(0.576, 0.439, 0.859, 1);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        // render the triangle
-        glUseProgram(shaderProgram);
-
-
-        // be sure to activate the shader before any calls to glUniform
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(shaderProgram);
 
         // update shader uniform
@@ -44,8 +48,15 @@ void App::renderLoop(GLFWwindow *window, unsigned int shaderProgram) {
         int vertexColorLocation = glGetUniformLocation(shaderProgram, "variator");
         glUniform1f(vertexColorLocation, variatorValue);
 
-        // render the triangle
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        model.getRotationMatrix((float)glfwGetTime() * 50.0f, rotationAxis);
+        mvp = projection * view * model;
+
+        int mvpLoc = glGetUniformLocation(shaderProgram, "mvp");
+        glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, mvp.getArrayReference());
+
+        // render the box
+        glBindVertexArray(vertex.getVAO());
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

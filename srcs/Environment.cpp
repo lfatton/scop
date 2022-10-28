@@ -8,11 +8,11 @@ Environment::Environment() {
 }
 
 Environment::~Environment() {
-    glfwDestroyWindow(mWindow);
+    glfwDestroyWindow(this->mWindow);
 }
 
-GLFWwindow *Environment::getWindow() {
-    return mWindow;
+GLFWwindow* Environment::getWindow() const {
+    return this->mWindow;
 }
 
 void Environment::initGlfw() {
@@ -34,9 +34,9 @@ void Environment::createWindow() {
     else
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    mWindow = glfwCreateWindow(WINDOW_W, WINDOW_H, "scop", NULL, NULL);
+    this->mWindow = glfwCreateWindow(WINDOW_W, WINDOW_H, "scop", nullptr, nullptr);
 
-    if (!mWindow) {
+    if (!this->mWindow) {
         const char *description;
         int code = glfwGetError(&description);
 
@@ -49,7 +49,8 @@ void Environment::createWindow() {
 }
 
 void Environment::setFramebufferCallback() {
-    glfwSetFramebufferSizeCallback(mWindow, [](GLFWwindow *window, int width, int height) {
-        glViewport(0, 0, WINDOW_W, WINDOW_H);
+    glfwSetFramebufferSizeCallback(this->mWindow, [](GLFWwindow* window, int width, int height)
+    {
+        glViewport(0, 0, width, height);
     });
 }

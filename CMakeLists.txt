@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # add the executable
-add_executable(scop srcs/main.cpp libs/glad.c srcs/App.cpp srcs/Environment.cpp srcs/Shader.cpp srcs/Vertex.cpp)
+add_executable(scop srcs/main.cpp libs/glad.c srcs/App.cpp srcs/Environment.cpp srcs/Shader.cpp srcs/Vertex.cpp srcs/Vector.cpp srcs/Vector.hpp srcs/Matrix.cpp srcs/Matrix.hpp srcs/utils.cpp srcs/utils.hpp)
 
 find_package(OpenGL REQUIRED)
 include_directories( ${OPENGL_INCLUDE_DIRS} includes)
