@@ -5,31 +5,19 @@ Vertex::Vertex() {
 }
 
 Vertex::~Vertex() {
-    glDeleteVertexArrays(1, &mVAO);
-    glDeleteBuffers(1, &mVBO);
-    glDeleteBuffers(1, &mEBO);
-}
-
-unsigned int Vertex::getVAO() const {
-    return this->mVAO;
-}
-
-unsigned int Vertex::getVBO() const {
-    return this->mVBO;
-}
-
-unsigned int Vertex::getEBO() const {
-    return this->mEBO;
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ebo);
 }
 
 void Vertex::initObjects() {
-    glGenVertexArrays(1, &mVAO);
-    glGenBuffers(1, &mVBO);
-    glGenBuffers(1, &mEBO);
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+    glGenBuffers(1, &ebo);
 
-    glBindVertexArray(mVAO);
+    glBindVertexArray(vao);
 
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(VERTICES), VERTICES, GL_STATIC_DRAW);
 
 //    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);

@@ -55,17 +55,13 @@ const float VERTICES[] = {
 
 class Vertex {
 private:
-    unsigned int mVBO{}, mVAO{}, mEBO{};
-
     void initObjects();
 
 public:
+    unsigned int vbo{}, vao{}, ebo{};
+
     Vertex();
     ~Vertex();
-
-    [[nodiscard]] unsigned int getVAO() const;
-    [[nodiscard]] unsigned int getVBO() const;
-    [[nodiscard]] unsigned int getEBO() const;
 };
 
 

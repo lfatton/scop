@@ -9,7 +9,7 @@ App::App() {
     speed = 0.5;
     can_change_speed = true;
 
-    renderLoop(glEnvironment.getWindow(), shader.getShaderProgram(), vertex);
+    renderLoop(glEnvironment.window, shader.shaderProgram, vertex);
 }
 
 App::~App() {
@@ -55,7 +55,7 @@ void App::renderLoop(GLFWwindow* window, unsigned int shaderProgram, const Verte
         glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, mvp.getArrayReference());
 
         // render the box
-        glBindVertexArray(vertex.getVAO());
+        glBindVertexArray(vertex.vao);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
