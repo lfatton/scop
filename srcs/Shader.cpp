@@ -36,22 +36,18 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 }
 
 Shader::~Shader() {
-    glDeleteShader(this->mShaderProgram);
-}
-
-unsigned int Shader::getShaderProgram() const {
-    return this->mShaderProgram;
+    glDeleteShader(this->shaderProgram);
 }
 
 void Shader::createShaderProgram(const char* vertexCode, const char* fragmentCode) {
     unsigned int vertex = createShader(GL_VERTEX_SHADER, vertexCode);
     unsigned int fragment = createShader(GL_FRAGMENT_SHADER, fragmentCode);
 
-    this->mShaderProgram = glCreateProgram();
-    glAttachShader(this->mShaderProgram, vertex);
-    glAttachShader(this->mShaderProgram, fragment);
-    glLinkProgram(this->mShaderProgram);
-    checkCompilationErrors(this->mShaderProgram, "PROGRAM");
+    this->shaderProgram = glCreateProgram();
+    glAttachShader(this->shaderProgram, vertex);
+    glAttachShader(this->shaderProgram, fragment);
+    glLinkProgram(this->shaderProgram);
+    checkCompilationErrors(this->shaderProgram, "PROGRAM");
 
 
     glDeleteShader(vertex);

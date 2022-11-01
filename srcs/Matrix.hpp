@@ -9,15 +9,15 @@
 
 class Matrix {
 private:
-    float matrix[4][4]{};
+    float mMatrix[4][4]{};
 
 public:
     Matrix();
 
     float & operator ()(int row, int column);
     float const& operator ()(int row, int column) const;
-    Matrix operator *(Matrix const &mat2) const;
-    Vector operator *(Vector const &vector) const;
+    Matrix operator *(Matrix const &multiplierMatrix) const;
+    Vector operator *(Vector const &multiplierVector) const;
     [[nodiscard]] float const * getArrayReference() const;
 
     void getTranslationMatrix(float x, float y, float z);

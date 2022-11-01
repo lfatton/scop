@@ -19,18 +19,16 @@ const char* const OS = "windows";
 
 class Environment {
 private:
-    GLFWwindow* mWindow = nullptr;
-
-    void setFramebufferCallback();
+    void setFramebufferCallback() const;
     void createWindow();
     static void initGlfw();
     static void initGlad();
 
 public:
+    GLFWwindow* window = nullptr;
+
     Environment();
     ~Environment();
-
-    [[nodiscard]] GLFWwindow* getWindow() const;
 };
 
 

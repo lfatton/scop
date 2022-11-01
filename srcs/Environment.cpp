@@ -8,11 +8,7 @@ Environment::Environment() {
 }
 
 Environment::~Environment() {
-    glfwDestroyWindow(this->mWindow);
-}
-
-GLFWwindow* Environment::getWindow() const {
-    return this->mWindow;
+    glfwDestroyWindow(this->window);
 }
 
 void Environment::initGlfw() {
@@ -34,9 +30,9 @@ void Environment::createWindow() {
     else
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    this->mWindow = glfwCreateWindow(WINDOW_W, WINDOW_H, "scop", nullptr, nullptr);
+    this->window = glfwCreateWindow(WINDOW_W, WINDOW_H, "scop", nullptr, nullptr);
 
-    if (!this->mWindow) {
+    if (!this->window) {
         const char *description;
         int code = glfwGetError(&description);
 
@@ -45,11 +41,11 @@ void Environment::createWindow() {
             throw std::runtime_error("\nCODE: " + std::to_string(code) + "\n" + description);
         }
     }
-    glfwMakeContextCurrent(mWindow);
+    glfwMakeContextCurrent(window);
 }
 
-void Environment::setFramebufferCallback() {
-    glfwSetFramebufferSizeCallback(this->mWindow, [](GLFWwindow* window, int width, int height)
+void Environment::setFramebufferCallback() const {
+    glfwSetFramebufferSizeCallback(this->window, [](GLFWwindow* callbackWindow, int width, int height)
     {
         glViewport(0, 0, width, height);
     });
