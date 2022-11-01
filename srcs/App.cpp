@@ -6,8 +6,8 @@ App::App() {
     Environment glEnvironment;
     Shader shader("../shaders/shader.vert", "../shaders/shader.frag");
     Vertex vertex;
-    speed = 0.5;
-    can_change_speed = true;
+    mSpeed = 0.5;
+    mCanChangeSpeed = true;
 
     renderLoop(glEnvironment.window, shader.shaderProgram, vertex);
 }
@@ -31,9 +31,9 @@ void App::renderLoop(GLFWwindow* window, unsigned int shaderProgram, const Verte
         // input
         // -----
         processInput(window);
-        if (speed_variation != 0 && can_change_speed) {
-            speed = std::clamp(speed + speed_variation, -3.0, 3.0);
-            can_change_speed = false;
+        if (mSpeedVariation != 0 && mCanChangeSpeed) {
+            mSpeed = std::clamp(mSpeed + mSpeedVariation, -3.0, 3.0);
+            mCanChangeSpeed = false;
         }
         // render
         // ------
@@ -43,8 +43,9 @@ void App::renderLoop(GLFWwindow* window, unsigned int shaderProgram, const Verte
 
         // update shader uniform
         double timeValue = glfwGetTime();
-        double dommage = 1.0;
-        auto variatorValue = static_cast<float>(std::modf(timeValue * speed, &dommage));
+        double damage = 1.0;
+        
+        auto variatorValue = static_cast<float>(std::modf(timeValue * mSpeed, &damage));
         int vertexColorLocation = glGetUniformLocation(shaderProgram, "variator");
         glUniform1f(vertexColorLocation, variatorValue);
 
@@ -74,14 +75,14 @@ void App::processInput(GLFWwindow *window) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        speed_variation = 0.1;
+        mSpeedVariation = 0.1;
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        speed_variation = -0.1;
+        mSpeedVariation = -0.1;
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE) {
-        can_change_speed = true;
-        speed_variation = 0;
+        mCanChangeSpeed = true;
+        mSpeedVariation = 0;
     }
 
 }
