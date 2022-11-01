@@ -9,12 +9,12 @@
 
 class App {
 private:
-    double speed;
-    bool can_change_speed;
-    double speed_variation;
+    double mSpeed;
+    bool mCanChangeSpeed;
+    double mSpeedVariation;
 
-    static void renderLoop(GLFWwindow* window, unsigned int shaderProgram, const Vertex& vertex);
-    static void processInput(GLFWwindow* window);
+    void renderLoop(GLFWwindow* window, unsigned int shaderProgram, const Vertex& vertex);
+    void processInput(GLFWwindow* window);
     static void quit();
 
 public:
