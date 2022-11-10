@@ -1,12 +1,11 @@
 #include "App.hpp"
-#include <cmath>
-#include <algorithm>
+
 
 App::App() {
     Environment glEnvironment;
     Shader shader("../shaders/shader.vert", "../shaders/shader.frag");
     Vertex vertex;
-    mSpeed = 0.5;
+    mSpeed = 0.5f;
     mCanChangeSpeed = true;
 
     renderLoop(glEnvironment.window, shader.shaderProgram, vertex);
@@ -18,38 +17,55 @@ App::~App() {
 
 void App::renderLoop(GLFWwindow* window, unsigned int shaderProgram, const Vertex& vertex) {
     Vector rotationAxis(0.5f, 1.0f, 0.0f);
+    Vector position;
+    Vector target(0.0f, 0.0f, -1.0f);
+
     Matrix view;
-    Matrix projection;
+    Matrix projection = Matrix::getPerspectiveMatrix(45.0f, (float)WINDOW_W / (float)WINDOW_H, 0.1f, 100.0f);
     Matrix model;
     Matrix mvp;
 
-    view.getTranslationMatrix(0.0f, 0.0f, -3.0f);
-    projection.getPerspectiveMatrix(45.0f, (float)WINDOW_W / (float)WINDOW_H, 0.1f, 100.0f);
+    const float radius = 5.0f;
+
+    position = Vector(0.0f, 0.0f, 3.0f);
+    Camera camera(position, target);
 
     while(!glfwWindowShouldClose(window)) {
         glEnable(GL_DEPTH_TEST);
         // input
         // -----
-        processInput(window);
+        processInput(window, camera);
+        Camera updatedCam(camera.position, camera.target);
+        camera = updatedCam;
+
+        view = Matrix::getLookAtMatrix(camera.xAxis, camera.yAxis, camera.zAxis, position);
+
         if (mSpeedVariation != 0 && mCanChangeSpeed) {
-            mSpeed = std::clamp(mSpeed + mSpeedVariation, -3.0, 3.0);
+            mSpeed = std::clamp(mSpeed + mSpeedVariation, -3.0f, 3.0f);
             mCanChangeSpeed = false;
         }
         // render
         // ------
-        glClearColor(0.576, 0.439, 0.859, 1);
+        glClearColor(0.576f, 0.439f, 0.859f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(shaderProgram);
 
         // update shader uniform
-        double timeValue = glfwGetTime();
-        double damage = 1.0;
+        auto timeValue = static_cast<float>(glfwGetTime());
+        float damage = 1.0f;
         
-        auto variatorValue = static_cast<float>(std::modf(timeValue * mSpeed, &damage));
+        auto variatorValue = std::modf(timeValue * mSpeed, &damage);
         int vertexColorLocation = glGetUniformLocation(shaderProgram, "variator");
         glUniform1f(vertexColorLocation, variatorValue);
 
-        model.getRotationMatrix((float)glfwGetTime() * 50.0f, rotationAxis);
+        //rotate object
+       // model = Matrix::getRotationMatrix((float)glfwGetTime() * 50.0f, rotationAxis);
+
+//       //rotate view
+//        position = Vector(sinf(timeValue) * radius, 0.0f, cosf(timeValue) * radius);
+//        Camera camera(position, target);
+//        view = Matrix::getLookAtMatrix(camera.xAxis, camera.yAxis, camera.zAxis, position);
+
         mvp = projection * view * model;
 
         int mvpLoc = glGetUniformLocation(shaderProgram, "mvp");
@@ -66,7 +82,7 @@ void App::renderLoop(GLFWwindow* window, unsigned int shaderProgram, const Verte
     }
 }
 
-void App::processInput(GLFWwindow *window) {
+void App::processInput(GLFWwindow *window, Camera &camera) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
@@ -85,6 +101,21 @@ void App::processInput(GLFWwindow *window) {
         mSpeedVariation = 0;
     }
 
+    //move camera
+    const float cameraSpeed = 0.05f;
+    Vector y = Vector::getCrossProduct(camera.target, camera.yAxis);
+    y.getUnitVector();
+
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        camera.position = camera.position + camera.target * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        camera.position = camera.position - camera.target * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+        camera.position = camera.position - y * cameraSpeed;
+    }
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+        camera.position = camera.position + y * cameraSpeed;
+    }
 }
 
 void App::quit() {

@@ -1,20 +1,23 @@
 #ifndef APP_HPP
 # define APP_HPP
 
+# include <cmath>
+# include <algorithm>
 # include "Environment.hpp"
 # include "Shader.hpp"
 # include "Vertex.hpp"
 # include "Vector.hpp"
 # include "Matrix.hpp"
+# include "Camera.hpp"
 
 class App {
 private:
-    double mSpeed;
+    float mSpeed;
     bool mCanChangeSpeed;
-    double mSpeedVariation;
+    float mSpeedVariation{};
 
     void renderLoop(GLFWwindow* window, unsigned int shaderProgram, const Vertex& vertex);
-    void processInput(GLFWwindow* window);
+    void processInput(GLFWwindow* window, Camera &camera);
     static void quit();
 
 public:

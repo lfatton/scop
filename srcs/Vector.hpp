@@ -13,10 +13,12 @@ public:
     Vector operator +(Vector const &addedVector) const;
     Vector operator -(Vector const &subtrahendVector) const;
     float operator *(Vector const &multiplierVector) const;
+    Vector operator *(float multiplier) const;
+    Vector& operator =(Vector const &vectorToCopy);
 
     [[nodiscard]] float getLength() const;
     void getUnitVector();
-    void getCrossProduct(Vector const &secondVector);
+    static Vector getCrossProduct(Vector const &vector1, Vector const &vector2);
 };
 
 #endif //VECTOR_HPP
