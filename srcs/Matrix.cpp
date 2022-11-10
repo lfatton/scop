@@ -13,15 +13,15 @@ Matrix::Matrix() {
     }
 }
 
-float &Matrix::operator()(int row, int column) {
+float &Matrix::operator ()(int row, int column) {
     return mMatrix[row][column];
 }
 
-float const &Matrix::operator()(int row, int column) const {
+float const &Matrix::operator ()(int row, int column) const {
     return mMatrix[row][column];
 }
 
-Matrix Matrix::operator*(Matrix const &multiplierMatrix) const {
+Matrix Matrix::operator *(Matrix const &multiplierMatrix) const {
     Matrix result;
 
     for (int i = 0; i < 4; i++) {
@@ -36,7 +36,7 @@ Matrix Matrix::operator*(Matrix const &multiplierMatrix) const {
     return result;
 }
 
-Vector Matrix::operator*(Vector const &multiplierVector) const {
+Vector Matrix::operator *(Vector const &multiplierVector) const {
     return Vector(this->mMatrix[0][0] * multiplierVector.x + this->mMatrix[0][1] * multiplierVector.y
     + this->mMatrix[0][2] * multiplierVector.z + this->mMatrix[0][3] * multiplierVector.w,
     this->mMatrix[1][0] * multiplierVector.x + this->mMatrix[1][1] * multiplierVector.y
@@ -46,6 +46,8 @@ Vector Matrix::operator*(Vector const &multiplierVector) const {
     this->mMatrix[3][0] * multiplierVector.x + this->mMatrix[3][1] * multiplierVector.y
     + this->mMatrix[3][2] * multiplierVector.z + this->mMatrix[3][3] * multiplierVector.w);
 }
+
+Matrix& Matrix::operator =(const Matrix &matrixToCopy) = default;
 
 float const *Matrix::getArrayReference() const {
     return &this->mMatrix[0][0];
@@ -63,31 +65,59 @@ void Matrix::getScalingMatrix(float x, float y, float z) {
     this->mMatrix[2][2] = z;
 }
 
-void Matrix::getRotationMatrix(float angleInDegrees, Vector const &axis) {
+Matrix Matrix::getRotationMatrix(float angleInDegrees, Vector const &axis) {
+    Matrix rotation;
+
     float angle = convertToRadians(angleInDegrees);
     float cosAngle = cosf(angle);
     float sinAngle = sinf(angle);
 
-    this->mMatrix[0][0] = cosAngle + axis.x * axis.x * (1.0f - cosAngle);
-    this->mMatrix[0][1] = axis.x * axis.y * (1.0f - cosAngle) - axis.z * sinAngle;
-    this->mMatrix[0][2] = axis.x * axis.z * (1.0f - cosAngle) + axis.y * sinAngle;
-    this->mMatrix[1][0] = axis.x * axis.y * (1.0f - cosAngle) + axis.z * sinAngle;
-    this->mMatrix[1][1] = cosAngle + axis.y * axis.y * (1.0f - cosAngle);
-    this->mMatrix[1][2] = axis.y * axis.z * (1.0f - cosAngle) - axis.x * sinAngle;
-    this->mMatrix[2][0] = axis.x * axis.z * (1.0f - cosAngle) - axis.y * sinAngle;
-    this->mMatrix[2][1] = axis.y * axis.z * (1.0f - cosAngle) + axis.x * sinAngle;
-    this->mMatrix[2][2] = cosAngle + axis.z * axis.z * (1.0f - cosAngle);
+    rotation(0, 0) = cosAngle + axis.x * axis.x * (1.0f - cosAngle);
+    rotation(0, 1) = axis.x * axis.y * (1.0f - cosAngle) - axis.z * sinAngle;
+    rotation(0, 2) = axis.x * axis.z * (1.0f - cosAngle) + axis.y * sinAngle;
+    rotation(1, 0) = axis.x * axis.y * (1.0f - cosAngle) + axis.z * sinAngle;
+    rotation(1, 1) = cosAngle + axis.y * axis.y * (1.0f - cosAngle);
+    rotation(1, 2) = axis.y * axis.z * (1.0f - cosAngle) - axis.x * sinAngle;
+    rotation(2, 0) = axis.x * axis.z * (1.0f - cosAngle) - axis.y * sinAngle;
+    rotation(2, 1) = axis.y * axis.z * (1.0f - cosAngle) + axis.x * sinAngle;
+    rotation(2, 2) = cosAngle + axis.z * axis.z * (1.0f - cosAngle);
+
+    return rotation;
 }
 
-void Matrix::getPerspectiveMatrix(float fov, float ratio, float near, float far) {
+Matrix Matrix::getPerspectiveMatrix(float fov, float ratio, float near, float far) {
+    Matrix perspective;
     auto fovTan = tanf(convertToRadians(fov)) * 0.5f;
 
-    this->mMatrix[0][0] = 1 / (ratio * fovTan);
-    this->mMatrix[1][1] = 1 / fovTan;
-    this->mMatrix[2][2] = (near + far) / (near - far);
-    this->mMatrix[2][3] = 2 * near * far / (near - far);
-    this->mMatrix[3][2] = -1.0f;
-//    this->matrix[3][3] = 0.0f;
+    perspective(0, 0) = 1 / (ratio * fovTan);
+    perspective(1, 1) = 1 / fovTan;
+    perspective(2, 2) = (near + far) / (near - far);
+    perspective(2, 3) = 2 * near * far / (near - far);
+    perspective(3, 2) = -1.0f;
+//    perspective(3, 3) = 0.0f;
+
+    return perspective;
+}
+
+Matrix Matrix::getLookAtMatrix(Vector &xAxis, Vector &yAxis, Vector &zAxis, Vector &position) {
+    Matrix lookAt;
+
+    lookAt(0, 0) = xAxis.x;
+    lookAt(0, 1) = xAxis.y;
+    lookAt(0, 2) = xAxis.z;
+    lookAt(1, 0) = yAxis.x;
+    lookAt(1, 1) = yAxis.y;
+    lookAt(1, 2) = yAxis.z;
+    lookAt(2, 0) = zAxis.x;
+    lookAt(2, 1) = zAxis.y;
+    lookAt(2, 2) = zAxis.z;
+
+    Matrix positionMatrix;
+    positionMatrix.getTranslationMatrix(-position.x, -position.y, -position.z);
+
+    lookAt = positionMatrix * lookAt;
+
+    return lookAt;
 }
 
 void Matrix::printToConsole() {
