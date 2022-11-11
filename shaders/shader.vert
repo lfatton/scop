@@ -7,6 +7,6 @@ uniform mat4 mvp;
 
 void main()
 {
-    gl_Position = mvp * vec4(aPos, 1.0);
+    gl_Position = mvp * vec4(aPos, 1.f);
     ourColor = aColor; // set ourColor to the input color we got from the vertex data
 }

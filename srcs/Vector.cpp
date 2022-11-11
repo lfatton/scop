@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Vector.hpp"
 
 Vector::Vector(float x, float y, float z, float w): x(x), y(y), z(z), w(w) {}
@@ -28,10 +27,10 @@ float Vector::getLength() const {
     return fsqrt(this->x * this->x + this->y * this->y + this->z * this->z);
 }
 
-void Vector::getUnitVector() {
+void Vector::normalise() {
     float length = this->getLength();
 
-    if (length == 0.0f)
+    if (length == 0.f)
         return ;
 
     this->x = this->x / length;

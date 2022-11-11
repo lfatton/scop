@@ -21,9 +21,10 @@ public:
     Matrix& operator =(Matrix const &matrixToCopy);
 
     [[nodiscard]] float const * getArrayReference() const;
-    void getTranslationMatrix(float x, float y, float z);
-    void getScalingMatrix(float x, float y, float z);
-    static Matrix getRotationMatrix(float angle, Vector const &vector);
+    void translate(float x, float y, float z);
+    void scale(float x, float y, float z);
+    void rotate(float angle, Vector &vector);
+
     static Matrix getPerspectiveMatrix(float fov, float ratio, float near, float far);
     static Matrix getLookAtMatrix(Vector &xAxis, Vector &yAxis, Vector &zAxis, Vector &position);
     void printToConsole();
