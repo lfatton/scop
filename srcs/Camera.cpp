@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Camera.hpp"
 
 Camera::Camera(Vector &givenPosition, Vector &givenTarget) {
@@ -6,10 +5,10 @@ Camera::Camera(Vector &givenPosition, Vector &givenTarget) {
     target = givenTarget;
 
     zAxis = position + target;
-    zAxis.getUnitVector();
+    zAxis.normalise();
 
-    xAxis = Vector::getCrossProduct(Vector(0.0f, 1.0f, 0.0f), zAxis);
-    xAxis.getUnitVector();
+    xAxis = Vector::getCrossProduct(Vector(0.f, 1.f, 0.f), zAxis);
+    xAxis.normalise();
 
     yAxis = Vector::getCrossProduct(zAxis, xAxis);
 }

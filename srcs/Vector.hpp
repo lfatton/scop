@@ -8,7 +8,7 @@ private:
 public:
     float x, y, z, w;
 
-    explicit Vector(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 1.0f);
+    explicit Vector(float x = 0.f, float y = 0.f, float z = 0.f, float w = 1.f);
 
     Vector operator +(Vector const &addedVector) const;
     Vector operator -(Vector const &subtrahendVector) const;
@@ -17,7 +17,7 @@ public:
     Vector& operator =(Vector const &vectorToCopy);
 
     [[nodiscard]] float getLength() const;
-    void getUnitVector();
+    void normalise();
     static Vector getCrossProduct(Vector const &vector1, Vector const &vector2);
 };
 
