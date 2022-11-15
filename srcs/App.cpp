@@ -6,6 +6,7 @@ App::App() {
     Vertex vertex;
     mSpeed = 0.5f;
     mCanChangeSpeed = true;
+    glEnable(GL_DEPTH_TEST);
 
     renderLoop(glEnvironment.window, shader.shaderProgram, vertex);
 }
@@ -15,22 +16,36 @@ App::~App() {
 }
 
 void App::renderLoop(GLFWwindow* window, unsigned int shaderProgram, const Vertex& vertex) {
-    Vector position(0.f, 0.f, 3.f);
-    Vector target(0.f, 0.f, -1.f);
-
-    Matrix projection = Matrix::getPerspectiveMatrix(45.f, (float)WINDOW_W / (float)WINDOW_H, 0.1f, 100.f);
     Matrix model;
 
-    Camera camera(position, target);
+    glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos) {
+       camera.rotate((float)xPos, (float)yPos);
+    });
+
+    glfwSetScrollCallback(window, [](GLFWwindow* window, double xOffset, double yOffset)
+    {
+        camera.zoom((float)yOffset);
+    });
+
+
+//    int i = 0;
+//    glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+//    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+//    glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
     while(!glfwWindowShouldClose(window)) {
-        glEnable(GL_DEPTH_TEST);
-
-        processInput(window, camera);
-        Camera updatedCam(camera.position, camera.target);
-        camera = updatedCam;
-
+        processInput(window);
         Matrix view = Matrix::getLookAtMatrix(camera.xAxis, camera.yAxis, camera.zAxis, camera.position);
+        Matrix projection = Matrix::getPerspectiveMatrix(camera.zoomValue, (float)WINDOW_W / (float)WINDOW_H, 0.1f, 100.f);
+
+//        glm::mat4 lookAt = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+//        if (i == 0) {
+//            std::cout << "MODEL   " << glm::to_string(lookAt) << std::endl;
+//
+//            view.printToConsole();
+//
+//            i++;
+//        }
 
         if (mSpeedVariation != 0.f && mCanChangeSpeed) {
             mSpeed = std::clamp(mSpeed + mSpeedVariation, -3.f, 3.f);
@@ -50,11 +65,9 @@ void App::renderLoop(GLFWwindow* window, unsigned int shaderProgram, const Verte
 
         Matrix mvp = projection * view * model;
 
-        float const *ref = mvp.getArrayReference();
-
         int mvpLoc = glGetUniformLocation(shaderProgram, "mvp");
 
-        glUniformMatrix4fv(mvpLoc, 1, GL_TRUE, ref);
+        glUniformMatrix4fv(mvpLoc, 1, GL_TRUE, mvp.getArrayReference());
 
         glBindVertexArray(vertex.vao);
         glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -64,7 +77,7 @@ void App::renderLoop(GLFWwindow* window, unsigned int shaderProgram, const Verte
     }
 }
 
-void App::processInput(GLFWwindow *window, Camera &camera) {
+void App::processInput(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
@@ -83,20 +96,14 @@ void App::processInput(GLFWwindow *window, Camera &camera) {
         mSpeedVariation = 0.f;
     }
 
-    const float cameraSpeed = 0.05f;
-    Vector y = Vector::getCrossProduct(camera.target, camera.yAxis);
-    y.normalise();
-
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-        camera.position = camera.position + camera.target * cameraSpeed;
+        camera.move(FORWARD, mSpeed);
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        camera.position = camera.position - camera.target * cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-        camera.position = camera.position - y * cameraSpeed;
-    }
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-        camera.position = camera.position + y * cameraSpeed;
-    }
+        camera.move(BACKWARD, mSpeed);
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+        camera.move(LEFT, mSpeed);
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+        camera.move(RIGHT, mSpeed);
 }
 
 void App::quit() {

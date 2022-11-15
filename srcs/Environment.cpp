@@ -42,6 +42,7 @@ void Environment::createWindow() {
         }
     }
     glfwMakeContextCurrent(window);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void Environment::setFramebufferCallback() const {
