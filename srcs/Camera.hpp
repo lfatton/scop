@@ -24,7 +24,6 @@ static Vector initialTarget(0.f, 0.f, -1.f);
 
 class Camera {
 private:
-    bool mFirstTime = true;
     float mLastX = (float)WINDOW_W / 2;
     float mLastY = (float)WINDOW_H / 2;
 public:

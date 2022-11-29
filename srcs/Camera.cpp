@@ -17,6 +17,7 @@ Camera::Camera(Vector &givenPosition, Vector &givenTarget, float givenZoom) {
 Camera& Camera::operator= (const Camera &cameraToCopy) = default;
 
 void Camera::update() {
+
     Camera updatedCam(this->position, this->target, this->zoomValue);
     *this = updatedCam;
 }
@@ -39,33 +40,26 @@ void Camera::move(Direction direction, float deltaTime) {
 }
 
 void Camera::rotate(float xPos, float yPos) {
-    if (mFirstTime)
-    {
-        mLastX = xPos;
-        mLastY = yPos;
-        mFirstTime = false;
-    }
-
-    float xOffset = xPos - mLastX;
-    float yOffset = mLastY - yPos;
-    mLastX = xPos;
-    mLastY = yPos;
+    float xOffset = xPos - this->mLastX;
+    float yOffset = this->mLastY - yPos;
+    this->mLastX = xPos;
+    this->mLastY = yPos;
 
     xOffset *= SENSITIVITY;
     yOffset *= SENSITIVITY;
 
-    yaw   += xOffset;
-    pitch += yOffset;
+    this->yaw   += xOffset;
+    this->pitch += yOffset;
 
-    if(pitch > PITCH_LIMIT)
-        pitch = PITCH_LIMIT;
-    if(pitch < -PITCH_LIMIT)
-        pitch = -PITCH_LIMIT;
+    if (this->pitch > PITCH_LIMIT)
+        this->pitch = PITCH_LIMIT;
+    if (this->pitch < -PITCH_LIMIT)
+        this->pitch = -PITCH_LIMIT;
 
     Vector direction;
-    direction.x = cosf(convertToRadians(yaw)) * cosf(convertToRadians(pitch));
-    direction.y = sinf(convertToRadians(pitch));
-    direction.z = sinf(convertToRadians(yaw)) * cosf(convertToRadians(pitch));
+    direction.x = cosf(convertToRadians(this->yaw)) * cosf(convertToRadians(this->pitch));
+    direction.y = sinf(convertToRadians(this->pitch));
+    direction.z = sinf(convertToRadians(this->yaw)) * cosf(convertToRadians(this->pitch));
     direction.normalise();
     this->target = direction;
     this->update();
