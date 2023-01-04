@@ -27,25 +27,10 @@ void App::renderLoop(GLFWwindow* window, unsigned int shaderProgram, const Verte
         camera.zoom((float)yOffset);
     });
 
-
-//    int i = 0;
-//    glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
-//    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-//    glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
-
     while(!glfwWindowShouldClose(window)) {
         processInput(window);
         Matrix view = Matrix::getLookAtMatrix(camera.xAxis, camera.yAxis, camera.zAxis, camera.position);
         Matrix projection = Matrix::getPerspectiveMatrix(camera.zoomValue, (float)WINDOW_W / (float)WINDOW_H, 0.1f, 100.f);
-
-//        glm::mat4 lookAt = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-//        if (i == 0) {
-//            std::cout << "MODEL   " << glm::to_string(lookAt) << std::endl;
-//
-//            view.printToConsole();
-//
-//            i++;
-//        }
 
         if (mSpeedVariation != 0.f && mCanChangeSpeed) {
             mSpeed = std::clamp(mSpeed + mSpeedVariation, -3.f, 3.f);
