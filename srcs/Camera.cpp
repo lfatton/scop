@@ -17,7 +17,6 @@ Camera::Camera(Vector &givenPosition, Vector &givenTarget, float givenZoom) {
 Camera& Camera::operator= (const Camera &cameraToCopy) = default;
 
 void Camera::update() {
-
     Camera updatedCam(this->position, this->target, this->zoomValue);
     *this = updatedCam;
 }
@@ -65,8 +64,7 @@ void Camera::rotate(float xPos, float yPos) {
     this->update();
 }
 
-void Camera::zoom(float yOffset)
-{
+void Camera::zoom(float yOffset) {
     this->zoomValue -= yOffset;
 
     if (this->zoomValue < 1.f)

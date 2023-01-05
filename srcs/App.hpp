@@ -15,8 +15,8 @@ static Camera camera;
 
 class App {
 private:
-    float mSpeed;
-    bool mCanChangeSpeed;
+    float mSpeed{};
+    bool mCanChangeSpeed{};
     float mSpeedVariation{};
 
     void renderLoop(GLFWwindow* window, unsigned int shaderProgram, const Vertex& vertex);

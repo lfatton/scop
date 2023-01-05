@@ -22,15 +22,17 @@ void App::renderLoop(GLFWwindow* window, unsigned int shaderProgram, const Verte
        camera.rotate((float)xPos, (float)yPos);
     });
 
-    glfwSetScrollCallback(window, [](GLFWwindow* window, double xOffset, double yOffset)
-    {
+    glfwSetScrollCallback(window, [](GLFWwindow* window, double xOffset, double yOffset){
         camera.zoom((float)yOffset);
     });
 
     while(!glfwWindowShouldClose(window)) {
         processInput(window);
         Matrix view = Matrix::getLookAtMatrix(camera.xAxis, camera.yAxis, camera.zAxis, camera.position);
-        Matrix projection = Matrix::getPerspectiveMatrix(camera.zoomValue, (float)WINDOW_W / (float)WINDOW_H, 0.1f, 100.f);
+        Matrix projection = Matrix::getPerspectiveMatrix(camera.zoomValue,
+                                                         (float)WINDOW_W / (float)WINDOW_H,
+                                                         0.1f,
+                                                         100.f);
 
         if (mSpeedVariation != 0.f && mCanChangeSpeed) {
             mSpeed = std::clamp(mSpeed + mSpeedVariation, -3.f, 3.f);
