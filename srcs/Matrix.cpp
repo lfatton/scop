@@ -2,8 +2,8 @@
 #include "Vector.hpp"
 
 Matrix::Matrix() {
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
+    for (unsigned int i = 0; i < 4; i++) {
+        for (unsigned int j = 0; j < 4; j++) {
             if (i == j) {
                 mMatrix[i][j] = 1.f;
             } else {
@@ -24,8 +24,8 @@ float const &Matrix::operator ()(int row, int column) const {
 Matrix Matrix::operator *(Matrix const &multiplierMatrix) const {
     Matrix result;
 
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
+    for (unsigned int i = 0; i < 4; i++) {
+        for (unsigned int j = 0; j < 4; j++) {
             result(i, j) = this->mMatrix[i][0] * multiplierMatrix(0, j)
                     + this->mMatrix[i][1] * multiplierMatrix(1, j)
                     + this->mMatrix[i][2] * multiplierMatrix(2, j)

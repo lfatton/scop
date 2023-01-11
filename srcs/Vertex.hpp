@@ -9,10 +9,9 @@
 class Vertex {
 private:
 public:
-    Vector position{}, normal{}, textureCoordinates{};
+    Vector position{}, textureCoordinates{}, normal{};
 
     explicit Vertex(Vector position = Vector());
 };
-
 
 #endif //VERTEX_HPP

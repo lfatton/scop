@@ -1,17 +1,52 @@
 #include "Mesh.hpp"
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices): vertices(vertices), indices(indices) {
-    glGenVertexArrays(1, &mVAO);
-    glGenBuffers(1, &mVBO);
-    glGenBuffers(1, &mEBO);
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Face> indices): vertices(vertices), indices(indices) {
+    for (auto & vertex : vertices)
+    {
+        this->mVerticesToArray.push_back(vertex.position.x);
+        this->mVerticesToArray.push_back(vertex.position.y);
+        this->mVerticesToArray.push_back(vertex.position.z);
 
-    glBindVertexArray(mVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+        if (vertex.textureCoordinates != Vector(0.f, 0.f, 0.f, 1.f)) {
+            this->mVerticesToArray.push_back(vertex.textureCoordinates.x);
+            this->mVerticesToArray.push_back(vertex.textureCoordinates.y);
+        } else {
+            this->mVerticesToArray.push_back(1.f);
+            this->mVerticesToArray.push_back(0.f);
+        }
 
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &getVerticesAsFloatArray()[0], GL_STATIC_DRAW);
+        if (vertex.normal != Vector(0.f, 0.f, 0.f, 1.f)) {
+            this->mVerticesToArray.push_back(vertex.textureCoordinates.x);
+            this->mVerticesToArray.push_back(vertex.textureCoordinates.y);
+            this->mVerticesToArray.push_back(vertex.textureCoordinates.z);
+        }  else {
+            this->mVerticesToArray.push_back(0.f);
+            this->mVerticesToArray.push_back(1.f);
+            this->mVerticesToArray.push_back(0.f);
+        }
+    }
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
+    for (auto & index : indices)
+    {
+        this->mIndicesToArray.push_back(index.a - 1);
+        this->mIndicesToArray.push_back(index.b - 1);
+        this->mIndicesToArray.push_back(index.c - 1);
+        if (index.d > 0)
+            this->mIndicesToArray.push_back(index.d - 1);
+    }
+
+    glGenVertexArrays(1, &(this->mVAO));
+    glGenBuffers(1, &(this->mVBO));
+    glGenBuffers(1, &(this->mEBO));
+
+    glBindVertexArray(this->mVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, this->mVBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * 3 * sizeof(float),
+                 &vertices[0], GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->mEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * 4 * sizeof(unsigned int),
                  &indices[0], GL_STATIC_DRAW);
 
     // vertex positions
@@ -33,21 +68,7 @@ Mesh::~Mesh() {
     glDeleteBuffers(1, &mEBO);
 }
 
-std::vector<float> Mesh::getVerticesAsFloatArray() const
-{
-    std::vector<float> array;
-
-    for (auto const & vertex : vertices)
-    {
-        Vector position = vertex.position;
-        array.push_back(position.x);
-        array.push_back(position.y);
-        array.push_back(position.z);
-
-        //Vector texCoord = vertex.textureCoordinates();
-        array.push_back(1.0f);
-        array.push_back(0.0f);
-    }
-
-    return array;
+void Mesh::Draw() {
+    glBindVertexArray(this->mVAO);
+    glDrawElements(GL_TRIANGLES, this->mIndicesToArray.size(), GL_UNSIGNED_INT, nullptr);
 }
