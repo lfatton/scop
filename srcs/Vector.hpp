@@ -15,6 +15,8 @@ public:
     float operator *(Vector const &multiplierVector) const;
     Vector operator *(float multiplier) const;
     Vector& operator =(Vector const &vectorToCopy);
+    bool operator == (const Vector& comparedVector) const;
+    bool operator != (const Vector& comparedVector) const;
 
     [[nodiscard]] float getLength() const;
     void normalise();

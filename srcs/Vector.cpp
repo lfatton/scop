@@ -20,8 +20,28 @@ Vector Vector::operator *(const float multiplier) const {
 
 Vector& Vector::operator =(const Vector &vectorToCopy) = default;
 
+bool Vector::operator ==(const Vector &comparedVector) const {
+    if (this->x == comparedVector.x
+        && this->y == comparedVector.y
+            && this->z == comparedVector.z
+                && this->w == comparedVector.w)
+        return true;
+
+    return false;
+}
+
+bool Vector::operator !=(const Vector &comparedVector) const {
+    if (this->x != comparedVector.x
+        || this->y != comparedVector.y
+           || this->z != comparedVector.z
+              || this->w != comparedVector.w)
+        return true;
+
+    return false;
+}
+
 float Vector::getLength() const {
-    return fsqrt(this->x * this->x + this->y * this->y + this->z * this->z);
+    return sqrtf(this->x * this->x + this->y * this->y + this->z * this->z);
 }
 
 void Vector::normalise() {
