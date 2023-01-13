@@ -8,6 +8,11 @@
 # include <fstream>
 # include <sstream>
 
+# include "utils.hpp"
+
+const char* VERT_PATH = "../shaders/shader.vert";
+const char* FRAG_PATH = "../shaders/shader.frag";
+
 class Shader {
 private:
     void createShaderProgram(const char* vertex, const char* fragment);
@@ -17,7 +22,7 @@ private:
 public:
     unsigned int shaderProgram{};
 
-    Shader(const char* vertexPath, const char* fragmentPath);
+    Shader();
     ~Shader();
 };
 

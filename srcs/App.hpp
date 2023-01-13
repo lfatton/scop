@@ -10,6 +10,7 @@
 # include "Vector.hpp"
 # include "Matrix.hpp"
 # include "Camera.hpp"
+# include "Parser.hpp"
 
 static Camera camera;
 
@@ -19,13 +20,16 @@ private:
     bool mCanChangeSpeed{};
     float mSpeedVariation{};
 
-    void renderLoop(GLFWwindow* window, unsigned int shaderProgram, const Vertex& vertex);
     void processInput(GLFWwindow* window);
     static void quit();
-
 public:
+    Environment glEnvironment;
+    Shader shader;
+    Parser parser;
+
     App();
     ~App();
+    void renderLoop();
 };
 
 #endif //APP_HPP

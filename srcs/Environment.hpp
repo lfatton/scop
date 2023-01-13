@@ -21,14 +21,15 @@ class Environment {
 private:
     void setFramebufferCallback() const;
     void createWindow();
-    static void initGlfw();
-    static void initGlad();
-
+    void initGlfw();
+    void initGlad();
 public:
     GLFWwindow* window = nullptr;
 
     Environment();
     ~Environment();
+
+    void init();
 };
 
 

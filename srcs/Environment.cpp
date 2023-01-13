@@ -1,14 +1,16 @@
 #include "Environment.hpp"
 
-Environment::Environment() {
+Environment::Environment() = default;
+
+Environment::~Environment() {
+    glfwDestroyWindow(this->window);
+}
+
+void Environment::init() {
     initGlfw();
     createWindow();
     initGlad();
     setFramebufferCallback();
-}
-
-Environment::~Environment() {
-    glfwDestroyWindow(this->window);
 }
 
 void Environment::initGlfw() {
