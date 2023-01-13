@@ -1,6 +1,6 @@
 #include "Shader.hpp"
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath) {
+Shader::Shader() {
     std::string vertexCode;
     std::string fragmentCode;
     std::ifstream vShaderFile, fShaderFile;
@@ -10,10 +10,9 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
     vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
     fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
 
-    try
-    {
-        vShaderFile.open(vertexPath);
-        fShaderFile.open(fragmentPath);
+    try {
+        vShaderFile.open(VERT_PATH);
+        fShaderFile.open(FRAG_PATH);
 
         vShaderStream << vShaderFile.rdbuf();
         fShaderStream << fShaderFile.rdbuf();
@@ -23,10 +22,8 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 
         vertexCode   = vShaderStream.str();
         fragmentCode = fShaderStream.str();
-    }
-    catch (std::ifstream::failure& e)
-    {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ: " << e.what() << std::endl;
+    } catch (std::ifstream::failure &e) {
+        scopError("error: cannot read shader file", e.what());
     }
 
     const char* vShaderCode = vertexCode.c_str();
@@ -68,31 +65,24 @@ unsigned int Shader::createShader(unsigned int type, const char* src) {
     return shader;
 }
 
-void Shader::checkCompilationErrors(unsigned int shader, std::string type)
-{
+void Shader::checkCompilationErrors(unsigned int shader, std::string type) {
     int success;
     char infoLog[1024];
 
-    if (type != "PROGRAM")
-    {
+    if (type != "PROGRAM") {
         glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-        if (!success)
-        {
+
+        if (!success) {
             glGetShaderInfoLog(shader, 1024, nullptr, infoLog);
-            std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog
-            << "\n -- --------------------------------------------------- -- " << std::endl;
-            throw std::runtime_error(infoLog);
+            scopError("error: cannot compile shader of type: " + type, infoLog);
         }
     }
-    else
-    {
+    else {
         glGetProgramiv(shader, GL_LINK_STATUS, &success);
-        if (!success)
-        {
+
+        if (!success) {
             glGetProgramInfoLog(shader, 1024, nullptr, infoLog);
-            std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog
-            << "\n -- --------------------------------------------------- -- " << std::endl;
-            throw std::runtime_error(infoLog);
+            scopError("error: cannot link shader program of type: " + type, infoLog);
         }
     }
 }
