@@ -1,5 +1,4 @@
 #include "Matrix.hpp"
-#include "Vector.hpp"
 
 Matrix::Matrix() {
     for (unsigned int i = 0; i < 4; i++) {
@@ -13,11 +12,11 @@ Matrix::Matrix() {
     }
 }
 
-float &Matrix::operator ()(int row, int column) {
+float &Matrix::operator ()(unsigned int row, unsigned int column) {
     return mMatrix[row][column];
 }
 
-float const &Matrix::operator ()(int row, int column) const {
+float const &Matrix::operator ()(unsigned int row, unsigned int column) const {
     return mMatrix[row][column];
 }
 
@@ -36,9 +35,9 @@ Matrix Matrix::operator *(Matrix const &multiplierMatrix) const {
     return result;
 }
 
-Vector Matrix::operator *(Vector const &multiplierVector) const {
-    return Vector(this->mMatrix[0][0] * multiplierVector.x + this->mMatrix[0][1] * multiplierVector.y
-    + this->mMatrix[0][2] * multiplierVector.z + this->mMatrix[0][3] * multiplierVector.w,
+Vector4 Matrix::operator *(Vector4 const &multiplierVector) const {
+    return Vector4(this->mMatrix[0][0] * multiplierVector.x + this->mMatrix[0][1] * multiplierVector.y
+                   + this->mMatrix[0][2] * multiplierVector.z + this->mMatrix[0][3] * multiplierVector.w,
     this->mMatrix[1][0] * multiplierVector.x + this->mMatrix[1][1] * multiplierVector.y
     + this->mMatrix[1][2] * multiplierVector.z + this->mMatrix[1][3] * multiplierVector.w,
     this->mMatrix[2][0] * multiplierVector.x + this->mMatrix[2][1] * multiplierVector.y
@@ -65,7 +64,7 @@ void Matrix::scale(float x, float y, float z) {
     this->mMatrix[2][2] = z;
 }
 
-void Matrix::rotate(float angleInDegrees, Vector &axis) {
+void Matrix::rotate(float angleInDegrees, Vector4 &axis) {
     axis.normalise();
 
     float angle = convertToRadians(angleInDegrees);
@@ -97,7 +96,7 @@ Matrix Matrix::getPerspectiveMatrix(float fov, float ratio, float near, float fa
     return perspective;
 }
 
-Matrix Matrix::getLookAtMatrix(Vector &xAxis, Vector &yAxis, Vector &zAxis, Vector &position) {
+Matrix Matrix::getLookAtMatrix(Vector4 &xAxis, Vector4 &yAxis, Vector4 &zAxis, Vector4 &position) {
     Matrix lookAt;
 
     lookAt(0, 0) = xAxis.x;

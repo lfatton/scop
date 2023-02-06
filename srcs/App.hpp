@@ -6,11 +6,10 @@
 
 # include "Environment.hpp"
 # include "Shader.hpp"
-# include "Vertex.hpp"
-# include "Vector.hpp"
+# include "Vector4.hpp"
 # include "Matrix.hpp"
 # include "Camera.hpp"
-# include "Parser.hpp"
+# include "Obj.hpp"
 
 static Camera camera;
 
@@ -19,13 +18,12 @@ private:
     float mSpeed{};
     bool mCanChangeSpeed{};
     float mSpeedVariation{};
+    Environment glEnvironment;
 
     void processInput(GLFWwindow* window);
     static void quit();
 public:
-    Environment glEnvironment;
-    Shader shader;
-    Parser parser;
+    Obj obj;
 
     App();
     ~App();

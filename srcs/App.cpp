@@ -8,10 +8,11 @@ App::App() {
 }
 
 App::~App() {
-    quit();
+    App::quit();
 }
 
 void App::renderLoop() {
+    Shader shader;
     Matrix model;
 
     glfwSetCursorPosCallback(this->glEnvironment.window, [](GLFWwindow* window, double xPos, double yPos) {
@@ -23,6 +24,7 @@ void App::renderLoop() {
     });
 
     while(!glfwWindowShouldClose(this->glEnvironment.window)) {
+
         processInput(this->glEnvironment.window);
         Matrix view = Matrix::getLookAtMatrix(camera.xAxis, camera.yAxis, camera.zAxis, camera.position);
         Matrix projection = Matrix::getPerspectiveMatrix(camera.zoomValue,
@@ -31,28 +33,28 @@ void App::renderLoop() {
                                                          100.f);
 
         if (this->mSpeedVariation != 0.f && this->mCanChangeSpeed) {
-            mSpeed = std::clamp(this->mSpeed + this->mSpeedVariation, -3.f, 3.f);
+            this->mSpeed = std::clamp(this->mSpeed + this->mSpeedVariation, -3.f, 3.f);
             this->mCanChangeSpeed = false;
         }
 
         glClearColor(0.576f, 0.439f, 0.859f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glUseProgram(this->shader.shaderProgram);
+        glUseProgram(shader.shaderProgram);
 
         auto timeValue = static_cast<float>(glfwGetTime());
         float damage = 1.f;
         
         auto variatorValue = std::modf(timeValue * mSpeed, &damage);
-        int vertexColorLocation = glGetUniformLocation(this->shader.shaderProgram, "variator");
+        int vertexColorLocation = glGetUniformLocation(shader.shaderProgram, "variator");
         glUniform1f(vertexColorLocation, variatorValue);
 
         Matrix mvp = projection * view * model;
 
-        int mvpLoc = glGetUniformLocation(this->shader.shaderProgram, "mvp");
+        int mvpLoc = glGetUniformLocation(shader.shaderProgram, "mvp");
 
         glUniformMatrix4fv(mvpLoc, 1, GL_TRUE, mvp.getArrayReference());
 
-
+        this->obj.draw();
         glfwSwapBuffers(this->glEnvironment.window);
         glfwPollEvents();
     }

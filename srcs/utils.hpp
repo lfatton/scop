@@ -1,12 +1,17 @@
 #ifndef UTILS_HPP
 # define UTILS_HPP
 
+# include "glad/glad.h"
+# include "GLFW/glfw3.h"
+
 # include <cmath>
 # include <iostream>
-# include "GLFW/glfw3.h"
+# include <sstream>
+# include <vector>
 
 float convertToRadians(float angle);
 float convertToDegrees(float angle);
+std::vector<std::string> strSplit(const std::string& str, const char delim);
 void printToConsole(const std::string& text);
 void scopError(const std::string& text, const char* error);
 
