@@ -5,7 +5,7 @@
 # include <cstring>
 # include <iostream>
 # include "utils.hpp"
-# include "Vector.hpp"
+# include "Vector4.hpp"
 
 class Matrix {
 private:
@@ -14,19 +14,19 @@ private:
 public:
     Matrix();
 
-    float & operator ()(int row, int column);
-    float const& operator ()(int row, int column) const;
+    float & operator ()(unsigned int row, unsigned int column);
+    float const& operator ()(unsigned int row, unsigned int column) const;
     Matrix operator *(Matrix const &multiplierMatrix) const;
-    Vector operator *(Vector const &multiplierVector) const;
+    Vector4 operator *(Vector4 const &multiplierVector) const;
     Matrix& operator =(Matrix const &matrixToCopy);
 
     [[nodiscard]] float const * getArrayReference() const;
     void translate(float x, float y, float z);
     void scale(float x, float y, float z);
-    void rotate(float angle, Vector &vector);
+    void rotate(float angle, Vector4 &vector);
 
     static Matrix getPerspectiveMatrix(float fov, float ratio, float near, float far);
-    static Matrix getLookAtMatrix(Vector &xAxis, Vector &yAxis, Vector &zAxis, Vector &position);
+    static Matrix getLookAtMatrix(Vector4 &xAxis, Vector4 &yAxis, Vector4 &zAxis, Vector4 &position);
     void printToConsole();
 };
 

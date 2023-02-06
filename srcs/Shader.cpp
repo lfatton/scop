@@ -27,7 +27,7 @@ Shader::Shader() {
     }
 
     const char* vShaderCode = vertexCode.c_str();
-    const char * fShaderCode = fragmentCode.c_str();
+    const char* fShaderCode = fragmentCode.c_str();
 
     createShaderProgram(vShaderCode, fShaderCode);
 }
@@ -65,9 +65,9 @@ unsigned int Shader::createShader(unsigned int type, const char* src) {
     return shader;
 }
 
-void Shader::checkCompilationErrors(unsigned int shader, std::string type) {
-    int success;
-    char infoLog[1024];
+void Shader::checkCompilationErrors(unsigned int shader, const std::string& type) {
+    int success{};
+    char infoLog[1024]{};
 
     if (type != "PROGRAM") {
         glGetShaderiv(shader, GL_COMPILE_STATUS, &success);

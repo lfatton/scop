@@ -1,6 +1,6 @@
 #include "Camera.hpp"
 
-Camera::Camera(Vector &givenPosition, Vector &givenTarget, float givenZoom) {
+Camera::Camera(Vector4 &givenPosition, Vector4 &givenTarget, float givenZoom) {
     zoomValue = givenZoom;
     position = givenPosition;
     target = givenTarget;
@@ -8,10 +8,10 @@ Camera::Camera(Vector &givenPosition, Vector &givenTarget, float givenZoom) {
     zAxis = position + target;
     zAxis.normalise();
 
-    xAxis = Vector::getCrossProduct(Vector(0.f, 1.f, 0.f), zAxis);
+    xAxis = Vector4::getCrossProduct(Vector4(0.f, 1.f, 0.f), zAxis);
     xAxis.normalise();
 
-    yAxis = Vector::getCrossProduct(zAxis, xAxis);
+    yAxis = Vector4::getCrossProduct(zAxis, xAxis);
 }
 
 Camera& Camera::operator= (const Camera &cameraToCopy) = default;
@@ -24,7 +24,7 @@ void Camera::update() {
 void Camera::move(Direction direction, float deltaTime) {
     float velocity = this->speedValue * deltaTime;
     velocity = 0.05f;
-    Vector right = Vector::getCrossProduct(this->target, this->yAxis);
+    Vector4 right = Vector4::getCrossProduct(this->target, this->yAxis);
     right.normalise();
 
     if (direction == FORWARD)
@@ -55,10 +55,8 @@ void Camera::rotate(float xPos, float yPos) {
     if (this->pitch < -PITCH_LIMIT)
         this->pitch = -PITCH_LIMIT;
 
-    Vector direction;
-    direction.x = cosf(convertToRadians(this->yaw)) * cosf(convertToRadians(this->pitch));
-    direction.y = sinf(convertToRadians(this->pitch));
-    direction.z = sinf(convertToRadians(this->yaw)) * cosf(convertToRadians(this->pitch));
+    Vector4 direction(cosf(convertToRadians(this->yaw)) * cosf(convertToRadians(this->pitch)),
+                      sinf(convertToRadians(this->pitch)));
     direction.normalise();
     this->target = direction;
     this->update();

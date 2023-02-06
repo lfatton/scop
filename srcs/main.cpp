@@ -1,7 +1,7 @@
 #include "App.hpp"
 
 int main(int argc, char **argv) {
-    std::string path = "/assets/objects/42.obj";
+    std::string path = "../assets/objects/42.obj";
 
     if (argc >= 3) {
         printToConsole("Too many arguments!\n"
@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     }
 
     App app;
-    app.parser.parse(path);
+    app.obj.load(path);
     app.renderLoop();
 
     return EXIT_SUCCESS;

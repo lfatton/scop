@@ -1,10 +1,10 @@
 #ifndef ENVIRONMENT_HPP
 # define ENVIRONMENT_HPP
 
-# include "glad/glad.h"
-# include "GLFW/glfw3.h"
 # include <iostream>
 # include <cstring>
+
+# include "utils.hpp"
 
 int const WINDOW_W = 800;
 int const WINDOW_H = 600;
@@ -21,8 +21,8 @@ class Environment {
 private:
     void setFramebufferCallback() const;
     void createWindow();
-    void initGlfw();
-    void initGlad();
+    static void initGlfw();
+    static void initGlad();
 public:
     GLFWwindow* window = nullptr;
 

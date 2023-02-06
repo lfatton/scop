@@ -6,21 +6,14 @@ Environment::~Environment() {
     glfwDestroyWindow(this->window);
 }
 
-void Environment::init() {
-    initGlfw();
-    createWindow();
-    initGlad();
-    setFramebufferCallback();
-}
-
 void Environment::initGlfw() {
     if (!glfwInit())
-        throw std::runtime_error("Failed to initialize GLFW!");
+        scopError("error: failed to initialize GLFW!", "");
 }
 
 void Environment::initGlad() {
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
-        throw std::runtime_error("Failed to initialize GLAD!");
+        scopError("error: failed to initialize GLAD!", "");
 }
 
 void Environment::createWindow() {
@@ -40,7 +33,7 @@ void Environment::createWindow() {
 
         if (description) {
             glfwTerminate();
-            throw std::runtime_error("\nCODE: " + std::to_string(code) + "\n" + description);
+            scopError("error: failed to create GLFW window",description);
         }
     }
     glfwMakeContextCurrent(window);
@@ -48,8 +41,14 @@ void Environment::createWindow() {
 }
 
 void Environment::setFramebufferCallback() const {
-    glfwSetFramebufferSizeCallback(this->window, [](GLFWwindow* callbackWindow, int width, int height)
-    {
+    glfwSetFramebufferSizeCallback(this->window, [](GLFWwindow* callbackWindow, int width, int height) {
         glViewport(0, 0, width, height);
     });
+}
+
+void Environment::init() {
+    Environment::initGlfw();
+    this->createWindow();
+    Environment::initGlad();
+    this->setFramebufferCallback();
 }
