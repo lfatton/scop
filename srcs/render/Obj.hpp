@@ -101,6 +101,7 @@ private:
     void readFaceLine(const std::string& line);
     void parseFile();
     void generateBuffers();
+    void printToConsole() const;
 public:
     std::vector<Vector3> tempVertices{}, indexedVertices{}, tempNormals{}, indexedNormals{};
     std::vector<Vector2> tempUVs{}, indexedUVs{};
