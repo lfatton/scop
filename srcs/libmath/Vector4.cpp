@@ -2,6 +2,13 @@
 
 Vector4::Vector4(float x, float y, float z, float w): x(x), y(y), z(z), w(w) {}
 
+Vector4::Vector4(Vector3 vector, float w) {
+    this->x = vector.x;
+    this->y = vector.y;
+    this->z = vector.z;
+    this->w = w;
+}
+
 Vector4 Vector4::operator +(Vector4 const &addedVector) const {
     return Vector4(this->x + addedVector.x, this->y + addedVector.y,
                    this->z + addedVector.z, this->w + addedVector.w);

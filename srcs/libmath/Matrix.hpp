@@ -4,7 +4,7 @@
 # include <cmath>
 # include <cstring>
 # include <iostream>
-# include "utils.hpp"
+# include "../utils.hpp"
 # include "Vector4.hpp"
 
 class Matrix {
@@ -23,10 +23,10 @@ public:
     [[nodiscard]] float const * getArrayReference() const;
     void translate(float x, float y, float z);
     void scale(float x, float y, float z);
-    void rotate(float angle, Vector4 &vector);
+    void rotate(float angle, Vector3 &vector);
 
     static Matrix getPerspectiveMatrix(float fov, float ratio, float near, float far);
-    static Matrix getLookAtMatrix(Vector4 &xAxis, Vector4 &yAxis, Vector4 &zAxis, Vector4 &position);
+    static Matrix getLookAtMatrix(Vector3 &xAxis, Vector3 &yAxis, Vector3 &zAxis, Vector3 &position);
     void printToConsole();
 };
 

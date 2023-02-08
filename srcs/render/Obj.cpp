@@ -225,7 +225,7 @@ void Obj::generateBuffers() {
 
     if (!this->indexedVertices.empty()) {
         glBindBuffer(GL_ARRAY_BUFFER, this->mVBO);
-        glBufferData(GL_ARRAY_BUFFER, this->indexedVertices.size() * sizeof(float) * 3,
+        glBufferData(GL_ARRAY_BUFFER, this->indexedVertices.size() * sizeof(float),
                      this->indexedVertices.data(), GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
@@ -255,7 +255,7 @@ void Obj::generateBuffers() {
                      this->indexedUVs.data(), GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
     }
 
     if (!this->indicesVertices.empty()) {
@@ -289,5 +289,8 @@ void Obj::draw() const {
     }
 
     glBindVertexArray(this->mVAO);
+    //std::cout << "NB " << this->indicesVertices.size() << std::endl;
+
+    //glDrawElements(GL_TRIANGLES, this->indicesVertices.size(), GL_UNSIGNED_INT, nullptr);
     glDrawArrays(GL_TRIANGLES,0, this->indicesVertices.size());
 }

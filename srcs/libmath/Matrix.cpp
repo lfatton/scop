@@ -31,7 +31,6 @@ Matrix Matrix::operator *(Matrix const &multiplierMatrix) const {
                     + this->mMatrix[i][3] * multiplierMatrix(3, j);
         }
     }
-
     return result;
 }
 
@@ -64,7 +63,7 @@ void Matrix::scale(float x, float y, float z) {
     this->mMatrix[2][2] = z;
 }
 
-void Matrix::rotate(float angleInDegrees, Vector4 &axis) {
+void Matrix::rotate(float angleInDegrees, Vector3 &axis) {
     axis.normalise();
 
     float angle = convertToRadians(angleInDegrees);
@@ -96,7 +95,7 @@ Matrix Matrix::getPerspectiveMatrix(float fov, float ratio, float near, float fa
     return perspective;
 }
 
-Matrix Matrix::getLookAtMatrix(Vector4 &xAxis, Vector4 &yAxis, Vector4 &zAxis, Vector4 &position) {
+Matrix Matrix::getLookAtMatrix(Vector3 &xAxis, Vector3 &yAxis, Vector3 &zAxis, Vector3 &position) {
     Matrix lookAt;
 
     lookAt(0, 0) = xAxis.x;

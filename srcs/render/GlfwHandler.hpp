@@ -1,10 +1,10 @@
-#ifndef ENVIRONMENT_HPP
-# define ENVIRONMENT_HPP
+#ifndef GLFW_HANDLER_HPP
+# define GLFW_HANDLER_HPP
 
 # include <iostream>
 # include <cstring>
 
-# include "utils.hpp"
+# include "../utils.hpp"
 
 int const WINDOW_W = 800;
 int const WINDOW_H = 600;
@@ -17,7 +17,7 @@ const char* const OS = "unix";
 const char* const OS = "windows";
 # endif
 
-class Environment {
+class GlfwHandler {
 private:
     void setFramebufferCallback() const;
     void createWindow();
@@ -26,11 +26,11 @@ private:
 public:
     GLFWwindow* window = nullptr;
 
-    Environment();
-    ~Environment();
+    GlfwHandler();
+    ~GlfwHandler();
 
     void init();
 };
 
 
-#endif //ENVIRONMENT_HPP
+#endif //GLFW_HANDLER_HPP

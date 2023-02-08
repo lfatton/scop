@@ -4,12 +4,11 @@
 # include <cmath>
 # include <algorithm>
 
-# include "Environment.hpp"
-# include "Shader.hpp"
-# include "Vector4.hpp"
-# include "Matrix.hpp"
-# include "Camera.hpp"
-# include "Obj.hpp"
+# include "render/GlfwHandler.hpp"
+# include "render/Shader.hpp"
+# include "libmath/Matrix.hpp"
+# include "render/Camera.hpp"
+# include "render/Obj.hpp"
 
 static Camera camera;
 
@@ -18,7 +17,7 @@ private:
     float mSpeed{};
     bool mCanChangeSpeed{};
     float mSpeedVariation{};
-    Environment glEnvironment;
+    GlfwHandler glEnvironment;
 
     void processInput(GLFWwindow* window);
     static void quit();

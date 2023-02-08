@@ -3,12 +3,15 @@
 
 # include <cmath>
 
+# include "Vector3.hpp"
+
 class Vector4 {
 private:
 public:
     float x, y, z, w;
 
     explicit Vector4(float x = 0.f, float y = 0.f, float z = 0.f, float w = 1.f);
+    explicit Vector4(Vector3 vector, float w = 1.f);
 
     Vector4 operator +(Vector4 const &addedVector) const;
     Vector4 operator -(Vector4 const &subtrahendVector) const;

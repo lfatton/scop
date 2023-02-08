@@ -1,22 +1,22 @@
-#include "Environment.hpp"
+#include "GlfwHandler.hpp"
 
-Environment::Environment() = default;
+GlfwHandler::GlfwHandler() = default;
 
-Environment::~Environment() {
+GlfwHandler::~GlfwHandler() {
     glfwDestroyWindow(this->window);
 }
 
-void Environment::initGlfw() {
+void GlfwHandler::initGlfw() {
     if (!glfwInit())
         scopError("error: failed to initialize GLFW!", "");
 }
 
-void Environment::initGlad() {
+void GlfwHandler::initGlad() {
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
         scopError("error: failed to initialize GLAD!", "");
 }
 
-void Environment::createWindow() {
+void GlfwHandler::createWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
@@ -40,15 +40,15 @@ void Environment::createWindow() {
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
-void Environment::setFramebufferCallback() const {
+void GlfwHandler::setFramebufferCallback() const {
     glfwSetFramebufferSizeCallback(this->window, [](GLFWwindow* callbackWindow, int width, int height) {
         glViewport(0, 0, width, height);
     });
 }
 
-void Environment::init() {
-    Environment::initGlfw();
+void GlfwHandler::init() {
+    GlfwHandler::initGlfw();
     this->createWindow();
-    Environment::initGlad();
+    GlfwHandler::initGlad();
     this->setFramebufferCallback();
 }
