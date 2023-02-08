@@ -216,6 +216,8 @@ void Obj::load(std::string path) {
 }
 
 void Obj::generateBuffers() {
+    //Obj::printToConsole();
+
     glGenVertexArrays(1, &this->mVAO);
     glGenBuffers(1, &this->mVBO);
     glGenBuffers(1, &this->mEBO);
@@ -225,7 +227,7 @@ void Obj::generateBuffers() {
 
     if (!this->indexedVertices.empty()) {
         glBindBuffer(GL_ARRAY_BUFFER, this->mVBO);
-        glBufferData(GL_ARRAY_BUFFER, this->indexedVertices.size() * sizeof(float),
+        glBufferData(GL_ARRAY_BUFFER, this->indexedVertices.size() * sizeof(float) * 3,
                      this->indexedVertices.data(), GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
@@ -291,6 +293,33 @@ void Obj::draw() const {
     glBindVertexArray(this->mVAO);
     //std::cout << "NB " << this->indicesVertices.size() << std::endl;
 
-    //glDrawElements(GL_TRIANGLES, this->indicesVertices.size(), GL_UNSIGNED_INT, nullptr);
-    glDrawArrays(GL_TRIANGLES,0, this->indicesVertices.size());
+    //glDrawElements(GL_TRIANGLES, this->indexedVertices.size(), GL_UNSIGNED_INT, nullptr);
+
+    //std::cout << this->indexedVertices.size() << std::endl;
+    glDrawArrays(GL_TRIANGLES,0, this->indexedVertices.size());
+}
+
+void Obj::printToConsole() const {
+    std::cout << ".OBJ VERTICES" << std::endl;
+    for (Vector3 vertex: this->tempVertices) {
+        std::cout <<
+            "x: " << vertex.x <<
+            " y: " << vertex.y <<
+            " z: " << vertex.z <<
+            std::endl;
+    }
+
+    std::cout << "INDEXED VERTICES" << std::endl;
+    for (Vector3 vertex: this->indexedVertices) {
+        std::cout <<
+                  "x: " << vertex.x <<
+                  " y: " << vertex.y <<
+                  " z: " << vertex.z <<
+                  std::endl;
+    }
+
+    std::cout << "INDICES" << std::endl;
+    for (unsigned int face: this->indicesVertices) {
+        std::cout << "f: " << face << std::endl;
+    }
 }
