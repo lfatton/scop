@@ -100,6 +100,7 @@ private:
     void readVertexLine(std::string line);
     void readFaceLine(const std::string& line);
     void parseFile();
+    void indexArrays();
     void generateBuffers();
     void printToConsole() const;
 public:
