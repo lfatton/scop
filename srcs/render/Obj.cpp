@@ -162,23 +162,10 @@ void Obj::readFaceLine(const std::string& line) {
                 }
             }
 
-            for (unsigned int index: this->indicesNormals) {
-                Vector3 normal = this->tempNormals[index - 1];
-                this->indexedNormals.push_back(normal);
-            }
 
-            if (this->mHasUVs) {
-                for (unsigned int index: this->indicesUVs) {
-                    Vector2 uv = this->tempUVs[index - 1];
-                    this->indexedUVs.push_back(uv);
-                }
-            }
         }
 
-        for (unsigned int index: this->indicesVertices) {
-            Vector3 vertex = this->tempVertices[index - 1];
-            this->indexedVertices.push_back(vertex);
-        }
+
     } else {
         scopError("error: bad face line format for: " + line +
                   "\n example of good face (without vt and vn) line format: f 34 27 19 OR f 8 14 7",
@@ -215,8 +202,30 @@ void Obj::load(std::string path) {
     }
 }
 
+void Obj::indexArrays() {
+    if (this->mHasNormals) {
+        for (unsigned int index: this->indicesNormals) {
+            Vector3 normal = this->tempNormals[index - 1];
+            this->indexedNormals.push_back(normal);
+        }
+    }
+
+    if (this->mHasUVs) {
+        for (unsigned int index: this->indicesUVs) {
+            Vector2 uv = this->tempUVs[index - 1];
+            this->indexedUVs.push_back(uv);
+        }
+    }
+
+    for (unsigned int index: this->indicesVertices) {
+        Vector3 vertex = this->tempVertices[index - 1];
+        this->indexedVertices.push_back(vertex);
+    }
+}
+
 void Obj::generateBuffers() {
     //Obj::printToConsole();
+    this->indexArrays();
 
     glGenVertexArrays(1, &this->mVAO);
     glGenBuffers(1, &this->mVBO);
@@ -291,12 +300,7 @@ void Obj::draw() const {
     }
 
     glBindVertexArray(this->mVAO);
-    //std::cout << "NB " << this->indicesVertices.size() << std::endl;
-
-    //glDrawElements(GL_TRIANGLES, this->indexedVertices.size(), GL_UNSIGNED_INT, nullptr);
-
-    //std::cout << this->indexedVertices.size() << std::endl;
-    glDrawArrays(GL_TRIANGLES,0, this->indexedVertices.size());
+    glDrawArrays(GL_TRIANGLES,0, this->indicesVertices.size());
 }
 
 void Obj::printToConsole() const {
