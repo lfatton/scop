@@ -4,8 +4,8 @@
 
 No librairies were allowed except one for handling the window (I used GLFW) 
 ```
-![monkey model colour](assets/screenshots/monkey-color-smooth.png "monkey model - smooth colour mode")
-![sword_model_greyscale](assets/screenshots/sword-grey.png "sword model - greyscale mode")
+![monkey model color_flat](assets/screenshots/monkey-color-flat.png "monkey model - flat colour mode")
+![sword_model_greyscale](assets/screenshots/sword-grey.png "sword model - smooth greyscale mode")
 ![lotus_model_dots](assets/screenshots/lotus-dots.png "lotus model - dots mode")
 ![teapot model_kitten texture](assets/screenshots/teapot-kitten.png "teapot - kitten texture mode")
 
