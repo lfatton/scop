@@ -37,8 +37,21 @@ void App::setCallbacks() const {
         if (key == GLFW_KEY_3 && action == GLFW_PRESS)
             currentGlMode = GL_POINT;
 
-        if (key == GLFW_KEY_T && action == GLFW_PRESS)
-            textIndex = !textIndex ? 1 : 0;
+        if (key == GLFW_KEY_T && action == GLFW_PRESS) {
+            switch (textIndex) {
+                case 0:
+                    textIndex = 1;
+                    break;
+                case 1:
+                    textIndex = 2;
+                    break;
+                case 2:
+                    textIndex = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
 
         if (key == GLFW_KEY_F && action == GLFW_PRESS)
             flatMode = !flatMode;
@@ -67,12 +80,15 @@ void App::renderLoop() {
 
     LoaderBMP kittenBMP("../assets/textures/kitten.bmp");
     LoaderBMP wallBMP("../assets/textures/wall.bmp");
+    LoaderBMP uvBMP("../assets/textures/uvtemplate.bmp");
 
     GLuint kittenText = kittenBMP.bindTexture();
     GLuint wallText = wallBMP.bindTexture();
+    GLuint uvText = uvBMP.bindTexture();
 
     this->mTexture[0] = kittenText;
     this->mTexture[1] = wallText;
+    this->mTexture[2] = uvText;
 
     this->setCallbacks();
     while(!glfwWindowShouldClose(this->glEnvironment.window)) {

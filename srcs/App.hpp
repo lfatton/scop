@@ -20,7 +20,7 @@ class App {
 private:
     float mSpeed{}, mColourSpeed{}, mColourSpeedVariation{}, mModelRotationalAngle{};
     GlfwHandler glEnvironment{};
-    GLuint mTexture[2]{};
+    GLuint mTexture[3]{};
     bool mCanChangeColourSpeed{};
     Matrix mModel{};
     Vector3 mModelRotationalAxis{};
