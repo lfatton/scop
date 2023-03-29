@@ -9,17 +9,25 @@
 # include "libmath/Matrix.hpp"
 # include "render/Camera.hpp"
 # include "render/Obj.hpp"
+# include "render/LoaderBMP.hpp"
 
 static Camera camera;
+static unsigned int textIndex{};
+static bool flatMode{}, colourMode{}, greyscaleMode{};
+static GLenum currentGlMode{};
 
 class App {
 private:
-    float mSpeed{};
-    bool mCanChangeSpeed{};
-    float mSpeedVariation{};
-    GlfwHandler glEnvironment;
+    float mSpeed{}, mColourSpeed{}, mColourSpeedVariation{}, mModelRotationalAngle{};
+    GlfwHandler glEnvironment{};
+    GLuint mTexture[2]{};
+    bool mCanChangeColourSpeed{};
+    Matrix mModel{};
+    Vector3 mModelRotationalAxis{};
 
     void processInput(GLFWwindow* window);
+    void setCallbacks() const;
+    static void printHelpToConsole();
     static void quit();
 public:
     Obj obj;

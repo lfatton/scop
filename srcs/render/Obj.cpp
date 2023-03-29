@@ -27,7 +27,7 @@ void Obj::readVertexLine(std::string line) {
                       "\n example of good vertex line format: v -0.227475 -0.745504 2.843098",
                       "");
 
-        this->tempVertices.push_back(vertex);
+        this->mVertices.push_back(vertex);
     } else if (line[1] == 't') {
         Vector2 vt;
         matches = std::sscanf(&(line[0]),
@@ -38,7 +38,7 @@ void Obj::readVertexLine(std::string line) {
                       "\n example of good vertex texture format: vt 0.748573 0.750412",
                       "");
 
-        this->tempUVs.push_back(vt);
+        this->mUVs.push_back(vt);
         this->mHasUVs = true;
     } else if (line[1] == 'n') {
         Vector3 vn;
@@ -50,7 +50,7 @@ void Obj::readVertexLine(std::string line) {
                       "\n example of good vertex normal line format: vn 0.000000 0.000000 -1.000000",
                       "");
 
-        this->tempNormals.push_back(vn);
+        this->mNormals.push_back(vn);
         this->mHasNormals = true;
     } else {
         scopError("error: bad vertex line format for: " + line +
@@ -59,7 +59,7 @@ void Obj::readVertexLine(std::string line) {
     }
 }
 
-void Obj::readFaceLine(const std::string& line) {
+void Obj::readFaceLine(const std::string &line) {
     const std::vector<std::string> splitIndices = strSplit(line, ' ');
     unsigned int length = splitIndices.size();
 
@@ -75,10 +75,10 @@ void Obj::readFaceLine(const std::string& line) {
                 scopError("error: cannot parse line: " + line, e.what());
             }
 
-            for (unsigned int index : indices) {
-                if (index <= 0 || index > this->tempVertices.size())
+            for (unsigned int index: indices) {
+                if (index <= 0 || index > this->mVertices.size())
                     scopError("error: out of index for face line: " + line, "");
-                this->indicesVertices.push_back(index);
+                this->mVerticesIndices.push_back(index - 1);
             }
 
             if (length == 5) {
@@ -90,21 +90,22 @@ void Obj::readFaceLine(const std::string& line) {
                     scopError("error: cannot parse line: " + line, e.what());
                 }
 
-                for (unsigned int index : indices) {
-                    if (index <= 0 || index > this->tempVertices.size())
+                for (unsigned int index: indices) {
+                    if (index <= 0 || index > this->mVertices.size())
                         scopError("error: out of index for face line: " + line, "");
-                    this->indicesVertices.push_back(index);
+                    this->mVerticesIndices.push_back(index - 1);
                 }
             }
         } else {
             int matches{};
             unsigned int indexVertex[3]{}, indexUV[3]{}, indexNormal[3]{};
 
-            for (unsigned int i = 1; i < 4; i++) {
+            for (unsigned int i = 0; i < 3; i++) {
                 if (!this->mHasUVs)
-                    matches += sscanf(splitIndices[i].c_str(), "%d//%d", &indexVertex[i - 1], &indexNormal[i - 1]);
+                    matches += sscanf(splitIndices[i + 1].c_str(), "%d//%d", &indexVertex[i], &indexNormal[i]);
                 else
-                    matches += sscanf(splitIndices[i].c_str(), "%d/%d/%d", &indexVertex[i - 1], &indexUV[i - 1], &indexNormal[i - 1]);
+                    matches += sscanf(splitIndices[i + 1].c_str(), "%d/%d/%d", &indexVertex[i], &indexUV[i],
+                                      &indexNormal[i]);
             }
 
             if (matches != 6 && matches != 9) {
@@ -114,16 +115,16 @@ void Obj::readFaceLine(const std::string& line) {
             }
 
             for (unsigned int i = 0; i < 3; i++) {
-                if ((indexVertex[i] <= 0 || indexVertex[i] > this->tempVertices.size()) ||
-                        (indexNormal[i] <= 0 || indexNormal[i] > this->tempNormals.size()))
+                if ((indexVertex[i] <= 0 || indexVertex[i] > this->mVertices.size()) ||
+                    (indexNormal[i] <= 0 || indexNormal[i] > this->mNormals.size()))
                     scopError("error: out of index for face line: " + line, "");
-                this->indicesVertices.push_back(indexVertex[i]);
-                this->indicesNormals.push_back(indexVertex[i]);
+                this->mVerticesIndices.push_back(indexVertex[i] - 1);
+                this->mNormalsIndices.push_back(indexNormal[i] - 1);
 
                 if (this->mHasUVs) {
-                    if (indexUV[i] <= 0 || indexUV[i] > this->tempUVs.size())
+                    if (indexUV[i] <= 0 || indexUV[i] > this->mUVs.size())
                         scopError("error: out of index for face line: " + line, "");
-                    this->indicesUVs.push_back(indexVertex[i]);
+                    this->mUVsIndices.push_back(indexUV[i] - 1);
                 }
             }
 
@@ -136,9 +137,12 @@ void Obj::readFaceLine(const std::string& line) {
                     matches += sscanf(splitIndices[4].c_str(), "%d//%d", &indexVertex[2], &indexNormal[2]);
 
                 } else {
-                    matches += sscanf(splitIndices[1].c_str(), "%d/%d/%d", &indexVertex[0], &indexUV[0], &indexNormal[0]);
-                    matches += sscanf(splitIndices[3].c_str(), "%d/%d/%d", &indexVertex[1], &indexUV[1], &indexNormal[1]);
-                    matches += sscanf(splitIndices[4].c_str(), "%d/%d/%d", &indexVertex[2], &indexUV[2], &indexNormal[2]);
+                    matches += sscanf(splitIndices[1].c_str(), "%d/%d/%d", &indexVertex[0], &indexUV[0],
+                                      &indexNormal[0]);
+                    matches += sscanf(splitIndices[3].c_str(), "%d/%d/%d", &indexVertex[1], &indexUV[1],
+                                      &indexNormal[1]);
+                    matches += sscanf(splitIndices[4].c_str(), "%d/%d/%d", &indexVertex[2], &indexUV[2],
+                                      &indexNormal[2]);
                 }
 
                 if (matches != 6 && matches != 9) {
@@ -148,24 +152,20 @@ void Obj::readFaceLine(const std::string& line) {
                 }
 
                 for (unsigned int i = 0; i < 3; i++) {
-                    if ((indexVertex[i] <= 0 || indexVertex[i] > this->tempVertices.size()) ||
-                            (indexNormal[i] <= 0 || indexNormal[i] > this->tempNormals.size()))
+                    if ((indexVertex[i] <= 0 || indexVertex[i] > this->mVertices.size()) ||
+                        (indexNormal[i] <= 0 || indexNormal[i] > this->mNormals.size()))
                         scopError("error: out of index for face line: " + line, "");
-                    this->indicesVertices.push_back(indexVertex[i]);
-                    this->indicesNormals.push_back(indexVertex[i]);
+                    this->mVerticesIndices.push_back(indexVertex[i] - 1);
+                    this->mNormalsIndices.push_back(indexNormal[i] - 1);
 
                     if (this->mHasUVs) {
-                        if (indexUV[i] <= 0 || indexUV[i] > this->tempUVs.size())
+                        if (indexUV[i] <= 0 || indexUV[i] > this->mUVs.size())
                             scopError("error: out of index for face line: " + line, "");
-                        this->indicesUVs.push_back(indexVertex[i]);
+                        this->mUVsIndices.push_back(indexUV[i] - 1);
                     }
                 }
             }
-
-
         }
-
-
     } else {
         scopError("error: bad face line format for: " + line +
                   "\n example of good face (without vt and vn) line format: f 34 27 19 OR f 8 14 7",
@@ -175,7 +175,6 @@ void Obj::readFaceLine(const std::string& line) {
 
 void Obj::parseFile() {
     std::ifstream objFile;
-
     objFile.open(this->mPath);
 
     if (!objFile)
@@ -202,128 +201,134 @@ void Obj::load(std::string path) {
     }
 }
 
-void Obj::indexArrays() {
-    if (this->mHasNormals) {
-        for (unsigned int index: this->indicesNormals) {
-            Vector3 normal = this->tempNormals[index - 1];
-            this->indexedNormals.push_back(normal);
-        }
-    }
-
+void Obj::indexVBO() {
     if (this->mHasUVs) {
-        for (unsigned int index: this->indicesUVs) {
-            Vector2 uv = this->tempUVs[index - 1];
-            this->indexedUVs.push_back(uv);
+        for (unsigned int index: this->mUVsIndices) {
+            Vector2 uv = this->mUVs[index];
+            this->mIndexedUVs.push_back(uv);
         }
     }
 
-    for (unsigned int index: this->indicesVertices) {
-        Vector3 vertex = this->tempVertices[index - 1];
-        this->indexedVertices.push_back(vertex);
+    for (unsigned int index: this->mNormalsIndices) {
+        Vector3 normal = this->mNormals[index];
+        this->mIndexedNormals.push_back(normal);
+    }
+
+    for (unsigned int index: this->mVerticesIndices) {
+        Vector3 vertex = this->mVertices[index];
+        this->mIndexedVertices.push_back(vertex);
     }
 }
 
-void Obj::generateBuffers() {
-    //Obj::printToConsole();
-    this->indexArrays();
 
+void Obj::generateBuffers() {
     glGenVertexArrays(1, &this->mVAO);
     glGenBuffers(1, &this->mVBO);
-    glGenBuffers(1, &this->mEBO);
 
-    if (this->mVAO < 0 || this->mVBO < 0 ||  this->mEBO < 0)
+    if (this->mVAO < 0 || this->mVBO < 0)
         scopError("error: buffer creation failed", "");
 
-    if (!this->indexedVertices.empty()) {
-        glBindBuffer(GL_ARRAY_BUFFER, this->mVBO);
-        glBufferData(GL_ARRAY_BUFFER, this->indexedVertices.size() * sizeof(float) * 3,
-                     this->indexedVertices.data(), GL_STATIC_DRAW);
+    this->computeCenter();
 
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    }
+    if (this->mHasNormals) {
+        this->indexVBO();
 
-    if (this->mHasNormals && !this->indexedNormals.empty()) {
-        glGenBuffers(1, &this->mNormalsVBO);
-        if (this->mNormalsVBO < 0)
+        glBindVertexArray(this->mVAO);
+
+        if (!this->mIndexedVertices.empty()) {
+            glBindBuffer(GL_ARRAY_BUFFER, this->mVBO);
+            glBufferData(GL_ARRAY_BUFFER, this->mIndexedVertices.size() * sizeof(Vector3),
+                         this->mIndexedVertices.data(), GL_STATIC_DRAW);
+
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+            if (this->mHasUVs && !this->mIndexedUVs.empty()) {
+                glGenBuffers(1, &this->mUVsVBO);
+
+                if (this->mUVsVBO < 0)
+                    scopError("error: buffer creation failed", "");
+
+                glBindBuffer(GL_ARRAY_BUFFER, this->mUVsVBO);
+                glBufferData(GL_ARRAY_BUFFER, this->mIndexedUVs.size() * sizeof(Vector2),
+                             this->mIndexedUVs.data(), GL_STATIC_DRAW);
+            }
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+            if (!this->mIndexedNormals.empty()) {
+                glGenBuffers(1, &this->mNormalsVBO);
+
+                if (this->mNormalsVBO < 0)
+                    scopError("error: buffer creation failed", "");
+
+                glBindBuffer(GL_ARRAY_BUFFER, this->mNormalsVBO);
+                glBufferData(GL_ARRAY_BUFFER, this->mIndexedNormals.size() * sizeof(Vector3),
+                             this->mIndexedNormals.data(), GL_STATIC_DRAW);
+
+                glEnableVertexAttribArray(2);
+                glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+            }
+        }
+    } else {
+        glGenBuffers(1, &this->mEBO);
+
+        if (this->mEBO < 0)
             scopError("error: buffer creation failed", "");
 
-        glBindBuffer(GL_ARRAY_BUFFER, this->mNormalsVBO);
-        glBufferData(GL_ARRAY_BUFFER, this->indexedNormals.size() * sizeof(float) * 3,
-                     this->indexedNormals.data(), GL_STATIC_DRAW);
+        glBindVertexArray(this->mVAO);
 
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+        if (!this->mVertices.empty()) {
+            glBindBuffer(GL_ARRAY_BUFFER, this->mVBO);
+            glBufferData(GL_ARRAY_BUFFER, this->mVertices.size() * sizeof(Vector3),
+                         this->mVertices.data(), GL_STATIC_DRAW);
+
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+            glEnableVertexAttribArray(2);
+            glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+        }
+
+        if (!this->mVerticesIndices.empty()) {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->mEBO);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->mVerticesIndices.size() * sizeof(unsigned short),
+                         this->mVerticesIndices.data(), GL_STATIC_DRAW);
+        }
     }
 
-    if (this->mHasUVs && !this->indexedUVs.empty()) {
-        glGenBuffers(1, &this->mUVsVBO);
-        if (this->mUVsVBO < 0)
-            scopError("error: buffer creation failed", "");
+}
 
-        glBindBuffer(GL_ARRAY_BUFFER, this->mUVsVBO);
-        glBufferData(GL_ARRAY_BUFFER, this->indexedUVs.size() * sizeof(float) * 2,
-                     this->indexedUVs.data(), GL_STATIC_DRAW);
+void	Obj::computeCenter() {
+    Vector3	min, max = this->mVertices[0];
+    Vector3 center{};
 
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+    for (unsigned int i = 1; i < this->mVertices.size(); i++) {
+        min.x = this->mVertices[i].x < min.x ? this->mVertices[i].x : min.x;
+        min.y = this->mVertices[i].y < min.y ? this->mVertices[i].y : min.y;
+        min.z = this->mVertices[i].z < min.z ? this->mVertices[i].z : min.z;
+        max.x = this->mVertices[i].x > max.x ? this->mVertices[i].x : max.x;
+        max.y = this->mVertices[i].y > max.y ? this->mVertices[i].y : max.y;
+        max.z = this->mVertices[i].z > max.z ? this->mVertices[i].z : max.z;
     }
 
-    if (!this->indicesVertices.empty()) {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->mEBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indicesVertices.size() * sizeof(unsigned int),
-                     this->indicesVertices.data(), GL_STATIC_DRAW);
+    center = (min + max) / 2.0;
+
+    for (unsigned int i = 0; i < this->mVertices.size(); i++) {
+        this->mVertices[i] = this->mVertices[i] - center;
     }
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
 }
 
 void Obj::draw() const {
-    if (this->mVBO != 0) {
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, this->mVBO);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    }
-
-    if (this->mHasNormals && this->mNormalsVBO != 0) {
-        glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, this->mNormalsVBO);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    }
-
-
-    if (this->mHasUVs && this->mUVsVBO != 0) {
-        glEnableVertexAttribArray(2);
-        glBindBuffer(GL_ARRAY_BUFFER, this->mUVsVBO);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    }
-
     glBindVertexArray(this->mVAO);
-    glDrawArrays(GL_TRIANGLES,0, this->indicesVertices.size());
-}
 
-void Obj::printToConsole() const {
-    std::cout << ".OBJ VERTICES" << std::endl;
-    for (Vector3 vertex: this->tempVertices) {
-        std::cout <<
-            "x: " << vertex.x <<
-            " y: " << vertex.y <<
-            " z: " << vertex.z <<
-            std::endl;
-    }
-
-    std::cout << "INDEXED VERTICES" << std::endl;
-    for (Vector3 vertex: this->indexedVertices) {
-        std::cout <<
-                  "x: " << vertex.x <<
-                  " y: " << vertex.y <<
-                  " z: " << vertex.z <<
-                  std::endl;
-    }
-
-    std::cout << "INDICES" << std::endl;
-    for (unsigned int face: this->indicesVertices) {
-        std::cout << "f: " << face << std::endl;
+    if (this->mHasNormals) {
+        glDrawArrays(GL_TRIANGLES, 0, this->mIndexedVertices.size());
+    } else {
+        glDrawElements(GL_TRIANGLES, this->mVerticesIndices.size(), GL_UNSIGNED_SHORT, nullptr);
     }
 }

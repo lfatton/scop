@@ -15,6 +15,7 @@ public:
     float operator *(Vector3 const &multiplierVector) const;
 
     Vector3 operator *(float multiplier) const;
+    Vector3 operator /(float multiplier) const;
     Vector3& operator =(Vector3 const &vectorToCopy);
     bool operator == (const Vector3& comparedVector) const;
     bool operator != (const Vector3& comparedVector) const;

@@ -18,6 +18,10 @@ Vector3 Vector3::operator *(const float multiplier) const {
     return Vector3(this->x * multiplier, this->y * multiplier, this->z * multiplier);
 }
 
+Vector3 Vector3::operator /(const float divider) const {
+    return Vector3(this->x / divider, this->y / divider, this->z / divider);
+}
+
 Vector3& Vector3::operator =(const Vector3 &vectorToCopy) = default;
 
 bool Vector3::operator ==(const Vector3 &comparedVector) const {

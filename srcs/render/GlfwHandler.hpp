@@ -6,8 +6,8 @@
 
 # include "../utils.hpp"
 
-int const WINDOW_W = 800;
-int const WINDOW_H = 600;
+int const WINDOW_W = 1920;
+int const WINDOW_H = 1080;
 
 # ifdef darwin
 const char* const OS = "ios";

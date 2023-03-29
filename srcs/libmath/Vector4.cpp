@@ -28,6 +28,10 @@ Vector4 Vector4::operator *(const float multiplier) const {
     return Vector4(this->x * multiplier, this->y * multiplier, this->z * multiplier, this->w * multiplier);
 }
 
+Vector4 Vector4::operator /(const float divider) const {
+    return Vector4(this->x / divider, this->y / divider, this->z / divider, this->w / divider);
+}
+
 Vector4& Vector4::operator =(const Vector4 &vectorToCopy) = default;
 
 bool Vector4::operator ==(const Vector4 &comparedVector) const {
