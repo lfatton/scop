@@ -1,8 +1,8 @@
 # scop
 ```
-42 school project that parses a wavefront .obj and renders it using OpenGL4.6 and C++17
+42 school project that parses a wavefront .obj and renders it using OpenGL4.6 and C++17.
 
-No librairies were allowed except one for handling the window (I used GLFW) 
+No librairies were allowed except one for handling the window (I used GLFW).
 ```
 ![monkey model color_flat](assets/screenshots/monkey-color-flat.png "monkey model - flat colour mode")
 ![sword_model_greyscale](assets/screenshots/sword-grey.png "sword model - smooth greyscale mode")
